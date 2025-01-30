@@ -1,5 +1,19 @@
 fabric_name: FABRIC
 
+#
+# TerminAttr config
+#
+# daemon_terminattr:
+#   cvaddrs:
+#     - apiserver.cv-staging.corp.arista.io:443
+#   cvauth:
+#     method: "token-secure"
+#     token_file: "/mnt/flash/cv-onboarding-token"
+#   cvvrf: default
+#   smashexcludes: "ale,flexCounter,hardware,kni,pulse,strata"
+#   ingestexclude: "/Sysdb/cell/1/agent,/Sysdb/cell/2/agent"
+#   cvcompression: gzip
+
 local_users:
   # - name: "cvpadmin"
   #   privilege: 15
