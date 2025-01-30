@@ -1,0 +1,21 @@
+Type,Node,Node Interface,Leaf IP Address,Peer Type,Peer Node,Peer Interface,Peer IP Address
+l3leaf,dc1-leaf1,Ethernet7,10.0.0.0/31,l3leaf,dc2-leaf1,Ethernet7,10.0.0.1/31
+l3leaf,dc1-leaf1,Ethernet8,10.0.0.2/31,l3leaf,dc2-leaf2,Ethernet8,10.0.0.3/31
+l3leaf,dc1-leaf1,Ethernet9,10.1.2.1/31,spine,dc1-spine1,Ethernet1,10.1.2.0/31
+l3leaf,dc1-leaf1,Ethernet10,10.1.2.3/31,spine,dc1-spine2,Ethernet1,10.1.2.2/31
+l3leaf,dc1-leaf2,Ethernet7,10.0.0.4/31,l3leaf,dc2-leaf2,Ethernet7,10.0.0.5/31
+l3leaf,dc1-leaf2,Ethernet8,10.0.0.6/31,l3leaf,dc2-leaf1,Ethernet8,10.0.0.7/31
+l3leaf,dc1-leaf2,Ethernet9,10.1.2.5/31,spine,dc1-spine1,Ethernet2,10.1.2.4/31
+l3leaf,dc1-leaf2,Ethernet10,10.1.2.7/31,spine,dc1-spine2,Ethernet2,10.1.2.6/31
+l3leaf,dc1-leaf3,Ethernet9,10.1.2.9/31,spine,dc1-spine1,Ethernet3,10.1.2.8/31
+l3leaf,dc1-leaf3,Ethernet10,10.1.2.11/31,spine,dc1-spine2,Ethernet3,10.1.2.10/31
+l3leaf,dc1-leaf4,Ethernet9,10.1.2.13/31,spine,dc1-spine1,Ethernet4,10.1.2.12/31
+l3leaf,dc1-leaf4,Ethernet10,10.1.2.15/31,spine,dc1-spine2,Ethernet4,10.1.2.14/31
+l3leaf,dc2-leaf1,Ethernet9,10.2.2.1/31,spine,dc2-spine1,Ethernet1,10.2.2.0/31
+l3leaf,dc2-leaf1,Ethernet10,10.2.2.3/31,spine,dc2-spine2,Ethernet1,10.2.2.2/31
+l3leaf,dc2-leaf2,Ethernet9,10.2.2.5/31,spine,dc2-spine1,Ethernet2,10.2.2.4/31
+l3leaf,dc2-leaf2,Ethernet10,10.2.2.7/31,spine,dc2-spine2,Ethernet2,10.2.2.6/31
+l3leaf,dc2-leaf3,Ethernet9,10.2.2.9/31,spine,dc2-spine1,Ethernet3,10.2.2.8/31
+l3leaf,dc2-leaf3,Ethernet10,10.2.2.11/31,spine,dc2-spine2,Ethernet3,10.2.2.10/31
+l3leaf,dc2-leaf4,Ethernet9,10.2.2.13/31,spine,dc2-spine1,Ethernet4,10.2.2.12/31
+l3leaf,dc2-leaf4,Ethernet10,10.2.2.15/31,spine,dc2-spine2,Ethernet4,10.2.2.14/31

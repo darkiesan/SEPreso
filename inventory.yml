@@ -1,0 +1,89 @@
+LABB:
+  children:
+    CVP:
+      hosts:
+        cv_server:
+          ansible_httpapi_host: 10.18.166.166
+          ansible_host: 10.18.166.166
+          ansible_user: cvpadmin
+          ansible_password: arista123
+          ansible_connection: httpapi
+          ansible_httpapi_use_ssl: true
+          ansible_httpapi_validate_certs: false
+          ansible_network_os: eos
+          ansible_httpapi_port: 443
+          # Configuration to get Virtual Env information
+          ansible_python_interpreter: $(which python3)
+    
+    DC:
+      children:
+        DC1:
+          children:
+            DC1_SPINES:
+              vars:
+                type: spine
+              hosts:
+                dc1-spine1:
+                  ansible_host: 10.205.15.11
+                dc1-spine2:
+                  ansible_host: 10.205.15.12
+            DC1_LEAFS:
+              children:
+                dc1_leaf_pair1:
+                  vars:
+                    type: l3leaf
+                  hosts:
+                    dc1-leaf1:
+                      ansible_host: 10.205.15.13
+                    dc1-leaf2:
+                      ansible_host: 10.205.15.14                
+                dc1_leaf_pair2:
+                  vars:
+                    type: l3leaf
+                  hosts:
+                    dc1-leaf3:
+                      ansible_host: 10.205.15.23
+                    dc1-leaf4:
+                      ansible_host: 10.205.15.24                
+                
+        DC2:
+          children:
+            DC2_SPINES:
+              vars:
+                type: spine
+              hosts:
+                dc2-spine1:
+                  ansible_host: 10.205.15.21
+                dc2-spine2:
+                  ansible_host: 10.205.15.22
+            DC2_LEAFS:
+              children:
+                dc2_leaf_pair1:
+                  vars:
+                    type: l3leaf
+                  hosts:
+                    dc2-leaf1:
+                      ansible_host: 10.205.15.23
+                    dc2-leaf2:
+                      ansible_host: 10.205.15.24
+                dc2_leaf_pair2:
+                  vars:
+                    type: l3leaf
+                  hosts:
+                    dc2-leaf3:
+                      ansible_host: 10.205.15.25
+                    dc2-leaf4:
+                      ansible_host: 10.205.15.26
+    
+    TENANTS:
+      children:
+        DC1_LEAFS:
+        DC2_LEAFS:
+
+    DC1_ENDPOINTS:
+      children:
+        DC1_LEAFS:
+
+    DC2_ENDPOINTS:
+      children:
+        DC2_LEAFS:

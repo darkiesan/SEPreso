@@ -1,0 +1,141 @@
+hostname: dc1-spine2
+is_deployed: true
+serial_number: SN-dc1-spine2
+router_bgp:
+  as: '65100'
+  router_id: 10.1.0.2
+  bgp_defaults:
+  - distance bgp 150 200 200
+  - graceful-restart restart-time 300
+  - graceful-restart
+  bgp:
+    default:
+      ipv4_unicast: false
+  maximum_paths:
+    paths: 2
+    ecmp: 2
+  peer_groups:
+  - name: IPv4-UNDERLAY-PEERS
+    type: ipv4
+    password: $1c$U4tL2vQP9QwZlxIV1K3/pw==
+    maximum_routes: 12000
+    send_community: all
+  address_family_ipv4:
+    peer_groups:
+    - name: IPv4-UNDERLAY-PEERS
+      activate: true
+  redistribute_routes:
+  - source_protocol: connected
+  neighbors:
+  - ip_address: 10.1.2.3
+    peer_group: IPv4-UNDERLAY-PEERS
+    remote_as: '65101'
+    peer: dc1-leaf1
+    description: dc1-leaf1_Ethernet10
+  - ip_address: 10.1.2.7
+    peer_group: IPv4-UNDERLAY-PEERS
+    remote_as: '65101'
+    peer: dc1-leaf2
+    description: dc1-leaf2_Ethernet10
+  - ip_address: 10.1.2.11
+    peer_group: IPv4-UNDERLAY-PEERS
+    remote_as: '65102'
+    peer: dc1-leaf3
+    description: dc1-leaf3_Ethernet10
+  - ip_address: 10.1.2.15
+    peer_group: IPv4-UNDERLAY-PEERS
+    remote_as: '65102'
+    peer: dc1-leaf4
+    description: dc1-leaf4_Ethernet10
+service_routing_protocols_model: multi-agent
+ip_routing: true
+router_multicast:
+  ipv4:
+    routing: true
+vlan_internal_order:
+  allocation: ascending
+  range:
+    beginning: 3700
+    ending: 3900
+spanning_tree:
+  mode: none
+local_users:
+- name: cvpadmin
+  privilege: 15
+  role: network-admin
+  sha512_password: $6$0u6SKAf4I4MFLihf$qoFU0/gkY.50pXWEbZCRTg9AspzpOndSDCvKx04Z05rqKJfCVJOBtDBTpXEIM2XTLLsG2T/6E4sBtatBXjbSY/
+- name: df
+  privilege: 15
+  role: network-admin
+  sha512_password: $6$W2.UOKH77rTBZ.I6$Hk44.wydPL9f0U2p7GNJPKcljfGSR81fopt6k3WvM1g3h9Fhr7XxwdIte1KC1ui3g9aKEmLYrhcyGom9kaVxy1
+vrfs:
+- name: mgmt
+  ip_routing: true
+management_interfaces:
+- name: Management1
+  description: oob_management
+  shutdown: false
+  vrf: mgmt
+  ip_address: 192.168.0.12/24
+  gateway: null
+  type: oob
+mac_address_table:
+  aging_time: 901
+management_api_http:
+  enable_vrfs:
+  - name: mgmt
+  enable_https: true
+ethernet_interfaces:
+- name: Ethernet1
+  peer: dc1-leaf1
+  peer_interface: Ethernet10
+  peer_type: l3leaf
+  description: P2P_LINK_TO_DC1-LEAF1_Ethernet10
+  shutdown: false
+  mtu: 1500
+  type: routed
+  ip_address: 10.1.2.2/31
+  pim:
+    ipv4:
+      sparse_mode: true
+- name: Ethernet2
+  peer: dc1-leaf2
+  peer_interface: Ethernet10
+  peer_type: l3leaf
+  description: P2P_LINK_TO_DC1-LEAF2_Ethernet10
+  shutdown: false
+  mtu: 1500
+  type: routed
+  ip_address: 10.1.2.6/31
+  pim:
+    ipv4:
+      sparse_mode: true
+- name: Ethernet3
+  peer: dc1-leaf3
+  peer_interface: Ethernet10
+  peer_type: l3leaf
+  description: P2P_LINK_TO_DC1-LEAF3_Ethernet10
+  shutdown: false
+  mtu: 1500
+  type: routed
+  ip_address: 10.1.2.10/31
+  pim:
+    ipv4:
+      sparse_mode: true
+- name: Ethernet4
+  peer: dc1-leaf4
+  peer_interface: Ethernet10
+  peer_type: l3leaf
+  description: P2P_LINK_TO_DC1-LEAF4_Ethernet10
+  shutdown: false
+  mtu: 1500
+  type: routed
+  ip_address: 10.1.2.14/31
+  pim:
+    ipv4:
+      sparse_mode: true
+loopback_interfaces:
+- name: Loopback0
+  description: EVPN_Overlay_Peering
+  shutdown: false
+  ip_address: 10.1.0.2/32

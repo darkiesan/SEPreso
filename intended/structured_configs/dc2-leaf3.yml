@@ -1,0 +1,382 @@
+hostname: dc2-leaf3
+is_deployed: true
+serial_number: SN-dc2-leaf3
+router_bgp:
+  as: '65202'
+  router_id: 10.2.0.5
+  bgp_defaults:
+  - distance bgp 150 200 200
+  - graceful-restart restart-time 300
+  - graceful-restart
+  bgp:
+    default:
+      ipv4_unicast: false
+  maximum_paths:
+    paths: 2
+    ecmp: 2
+  peer_groups:
+  - name: MLAG-IPv4-UNDERLAY-PEER
+    type: ipv4
+    remote_as: '65202'
+    next_hop_self: true
+    description: dc2-leaf4
+    password: $1c$U4tL2vQP9QwZlxIV1K3/pw==
+    maximum_routes: 12000
+    send_community: all
+    route_map_in: RM-MLAG-PEER-IN
+  - name: IPv4-UNDERLAY-PEERS
+    type: ipv4
+    password: $1c$U4tL2vQP9QwZlxIV1K3/pw==
+    maximum_routes: 12000
+    send_community: all
+  - name: EVPN-OVERLAY-PEERS
+    type: evpn
+    update_source: Loopback0
+    bfd: true
+    password: $1c$U4tL2vQP9QwZlxIV1K3/pw==
+    send_community: all
+    maximum_routes: 0
+    ebgp_multihop: 4
+  address_family_ipv4:
+    peer_groups:
+    - name: MLAG-IPv4-UNDERLAY-PEER
+      activate: true
+    - name: IPv4-UNDERLAY-PEERS
+      activate: true
+    - name: EVPN-OVERLAY-PEERS
+      activate: false
+  neighbors:
+  - ip_address: 10.2.4.5
+    peer_group: MLAG-IPv4-UNDERLAY-PEER
+    peer: dc2-leaf4
+    description: dc2-leaf4
+  - ip_address: 10.2.2.8
+    peer_group: IPv4-UNDERLAY-PEERS
+    remote_as: '65200'
+    peer: dc2-spine1
+    description: dc2-spine1_Ethernet3
+  - ip_address: 10.2.2.10
+    peer_group: IPv4-UNDERLAY-PEERS
+    remote_as: '65200'
+    peer: dc2-spine2
+    description: dc2-spine2_Ethernet3
+  - ip_address: 10.2.0.3
+    peer_group: EVPN-OVERLAY-PEERS
+    peer: dc2-leaf1
+    description: dc2-leaf1
+    remote_as: '65201'
+    route_map_out: RM-EVPN-FILTER-AS65201
+  - ip_address: 10.2.0.4
+    peer_group: EVPN-OVERLAY-PEERS
+    peer: dc2-leaf2
+    description: dc2-leaf2
+    remote_as: '65201'
+    route_map_out: RM-EVPN-FILTER-AS65201
+  redistribute_routes:
+  - source_protocol: connected
+  address_family_evpn:
+    peer_groups:
+    - name: EVPN-OVERLAY-PEERS
+      activate: true
+  vrfs:
+  - name: FW_TEST1
+    router_id: 10.2.0.5
+    rd: 10.2.0.5:1
+    route_targets:
+      import:
+      - address_family: evpn
+        route_targets:
+        - '65000:1'
+      export:
+      - address_family: evpn
+        route_targets:
+        - '65000:1'
+    redistribute_routes:
+    - source_protocol: connected
+    neighbors:
+    - ip_address: 10.2.4.5
+      peer_group: MLAG-IPv4-UNDERLAY-PEER
+  vlans:
+  - id: 10
+    tenant: FWTEST
+    rd: 10.2.0.5:10010
+    route_targets:
+      both:
+      - 65000:10010
+    redistribute_routes:
+    - learned
+  - id: 100
+    tenant: FWTEST
+    rd: 10.2.0.5:10100
+    route_targets:
+      both:
+      - 65000:10100
+    redistribute_routes:
+    - learned
+  - id: 2
+    tenant: FWTEST
+    rd: 10.2.0.5:10002
+    route_targets:
+      both:
+      - 65000:10002
+    redistribute_routes:
+    - learned
+service_routing_protocols_model: multi-agent
+ip_routing: true
+router_multicast:
+  ipv4:
+    routing: true
+vlan_internal_order:
+  allocation: ascending
+  range:
+    beginning: 3700
+    ending: 3900
+spanning_tree:
+  mode: mstp
+  mst_instances:
+  - id: '0'
+    priority: 4096
+  no_spanning_tree_vlan: 4093-4094
+local_users:
+- name: cvpadmin
+  privilege: 15
+  role: network-admin
+  sha512_password: $6$0u6SKAf4I4MFLihf$qoFU0/gkY.50pXWEbZCRTg9AspzpOndSDCvKx04Z05rqKJfCVJOBtDBTpXEIM2XTLLsG2T/6E4sBtatBXjbSY/
+- name: df
+  privilege: 15
+  role: network-admin
+  sha512_password: $6$W2.UOKH77rTBZ.I6$Hk44.wydPL9f0U2p7GNJPKcljfGSR81fopt6k3WvM1g3h9Fhr7XxwdIte1KC1ui3g9aKEmLYrhcyGom9kaVxy1
+vrfs:
+- name: mgmt
+  ip_routing: true
+- name: FW_TEST1
+  tenant: FWTEST
+  ip_routing: true
+management_interfaces:
+- name: Management1
+  description: oob_management
+  shutdown: false
+  vrf: mgmt
+  ip_address: 192.168.0.25/24
+  gateway: null
+  type: oob
+mac_address_table:
+  aging_time: 901
+management_api_http:
+  enable_vrfs:
+  - name: mgmt
+  enable_https: true
+vlans:
+- id: 4093
+  tenant: system
+  name: LEAF_PEER_L3
+  trunk_groups:
+  - LEAF_PEER_L3
+- id: 4094
+  tenant: system
+  name: MLAG_PEER
+  trunk_groups:
+  - MLAG
+- id: 10
+  name: TEST_VLAN10
+  tenant: FWTEST
+- id: 100
+  name: TEST_VLAN100
+  tenant: FWTEST
+- id: 3000
+  name: MLAG_iBGP_FW_TEST1
+  trunk_groups:
+  - LEAF_PEER_L3
+  tenant: FWTEST
+- id: 2
+  name: TEST_VLAN2
+  tenant: FWTEST
+vlan_interfaces:
+- name: Vlan4093
+  description: MLAG_PEER_L3_PEERING
+  shutdown: false
+  mtu: 1500
+  ip_address: 10.2.4.4/31
+  pim:
+    ipv4:
+      sparse_mode: true
+- name: Vlan4094
+  description: MLAG_PEER
+  shutdown: false
+  no_autostate: true
+  mtu: 1500
+  ip_address: 10.2.3.4/31
+- name: Vlan10
+  tenant: FWTEST
+  tags:
+  - fabricwide
+  description: TEST_VLAN10
+  shutdown: false
+  mtu: 1400
+  ip_address_virtual: 10.10.0.1/24
+  vrf: FW_TEST1
+- name: Vlan100
+  tenant: FWTEST
+  tags:
+  - fabricwide
+  description: TEST_VLAN100
+  shutdown: false
+  mtu: 1400
+  ip_address_virtual: 10.100.0.1/24
+  vrf: FW_TEST1
+- name: Vlan3000
+  tenant: FWTEST
+  type: underlay_peering
+  shutdown: false
+  description: 'MLAG_PEER_L3_iBGP: vrf FW_TEST1'
+  vrf: FW_TEST1
+  mtu: 1500
+  ip_address: 10.2.4.4/31
+port_channel_interfaces:
+- name: Port-Channel11
+  description: MLAG_PEER_dc2-leaf4_Po11
+  type: switched
+  shutdown: false
+  mode: trunk
+  trunk_groups:
+  - LEAF_PEER_L3
+  - MLAG
+- name: Port-Channel1
+  description: SERVER2-2_SERVER2-2
+  type: switched
+  shutdown: false
+  mode: access
+  vlans: '10'
+  spanning_tree_portfast: edge
+  mlag: 1
+ethernet_interfaces:
+- name: Ethernet11
+  peer: dc2-leaf4
+  peer_interface: Ethernet11
+  peer_type: mlag_peer
+  description: MLAG_PEER_dc2-leaf4_Ethernet11
+  type: port-channel-member
+  shutdown: false
+  channel_group:
+    id: 11
+    mode: active
+- name: Ethernet12
+  peer: dc2-leaf4
+  peer_interface: Ethernet12
+  peer_type: mlag_peer
+  description: MLAG_PEER_dc2-leaf4_Ethernet12
+  type: port-channel-member
+  shutdown: false
+  channel_group:
+    id: 11
+    mode: active
+- name: Ethernet9
+  peer: dc2-spine1
+  peer_interface: Ethernet3
+  peer_type: spine
+  description: P2P_LINK_TO_DC2-SPINE1_Ethernet3
+  shutdown: false
+  mtu: 1500
+  type: routed
+  ip_address: 10.2.2.9/31
+  pim:
+    ipv4:
+      sparse_mode: true
+- name: Ethernet10
+  peer: dc2-spine2
+  peer_interface: Ethernet3
+  peer_type: spine
+  description: P2P_LINK_TO_DC2-SPINE2_Ethernet3
+  shutdown: false
+  mtu: 1500
+  type: routed
+  ip_address: 10.2.2.11/31
+  pim:
+    ipv4:
+      sparse_mode: true
+- name: Ethernet1
+  peer: SERVER2-2
+  peer_interface: Eth0
+  peer_type: server
+  description: SERVER2-2_Eth0
+  shutdown: false
+  type: port-channel-member
+  channel_group:
+    id: 1
+    mode: active
+mlag_configuration:
+  domain_id: dc2-leaf-pair2
+  local_interface: Vlan4094
+  peer_address: 10.2.3.5
+  peer_link: Port-Channel11
+  reload_delay_mlag: '300'
+  reload_delay_non_mlag: '330'
+route_maps:
+- name: RM-MLAG-PEER-IN
+  sequence_numbers:
+  - sequence: 10
+    type: permit
+    set:
+    - origin incomplete
+    description: Make routes learned over MLAG Peer-link less preferred on spines to ensure optimal routing
+- name: RM-EVPN-FILTER-AS65201
+  sequence_numbers:
+  - sequence: 10
+    type: deny
+    match:
+    - as 65201
+  - sequence: 20
+    type: permit
+loopback_interfaces:
+- name: Loopback0
+  description: EVPN_Overlay_Peering
+  shutdown: false
+  ip_address: 10.2.0.5/32
+- name: Loopback1
+  description: VTEP_VXLAN_Tunnel_Source
+  shutdown: false
+  ip_address: 10.2.1.5/32
+- name: Loopback3
+  description: IGMP snooping querier
+  shutdown: false
+  vrf: FW_TEST1
+  ip_address: 10.255.0.5/32
+router_bfd:
+  multihop:
+    interval: 5000
+    min_rx: 5000
+    multiplier: 3
+ip_igmp_snooping:
+  globally_enabled: true
+  vlans:
+  - id: 10
+    querier:
+      enabled: true
+      address: 10.2.0.5
+      version: 3
+  - id: 100
+    querier:
+      enabled: true
+      address: 10.2.0.5
+      version: 3
+ip_virtual_router_mac_address: 00:11:22:33:44:55
+vxlan_interface:
+  Vxlan1:
+    description: dc2-leaf3_VTEP
+    vxlan:
+      udp_port: 4789
+      source_interface: Loopback1
+      virtual_router_encapsulation_mac_address: mlag-system-id
+      vlans:
+      - id: 10
+        vni: 10010
+      - id: 100
+        vni: 10100
+      - id: 2
+        vni: 10002
+      vrfs:
+      - name: FW_TEST1
+        vni: 1
+virtual_source_nat_vrfs:
+- name: FW_TEST1
+  ip_address: 10.255.0.5

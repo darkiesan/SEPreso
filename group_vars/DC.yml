@@ -1,0 +1,214 @@
+fabric_name: DC
+
+local_users:
+  - name: "cvpadmin"
+    privilege: 15
+    role: "network-admin"
+    sha512_password: "$6$0u6SKAf4I4MFLihf$qoFU0/gkY.50pXWEbZCRTg9AspzpOndSDCvKx04Z05rqKJfCVJOBtDBTpXEIM2XTLLsG2T/6E4sBtatBXjbSY/"
+
+  - name: "df"
+    privilege: 15
+    role: "network-admin"
+    sha512_password: "$6$W2.UOKH77rTBZ.I6$Hk44.wydPL9f0U2p7GNJPKcljfGSR81fopt6k3WvM1g3h9Fhr7XxwdIte1KC1ui3g9aKEmLYrhcyGom9kaVxy1"
+
+# Terminal settings
+terminal:
+  length: 0
+
+# Interface defaults for unused ports
+interface_defaults:
+  ethernet:
+    shutdown: true
+
+switchport_default:
+  mode: routed
+
+#  
+# Timezone
+#
+clock:
+  timezone: "Europe/Stockholm"
+
+#
+# MAC address table settings
+#
+mac_address_table:
+  aging_time: 901
+
+#sFlow
+sflow:
+  sample: 7000
+  dangerous: false
+  destinations:
+    - destination: "127.0.0.1"
+  source_interface: "Loopback0"
+  run: true
+
+#
+# TerminAttr config
+#
+daemon_terminattr:
+  cvaddrs:
+    - 192.168.0.5:9910
+  cvauth:
+    method: "token"
+    token_file: "/mnt/flash/token"
+  cvvrf: "mgmt"
+  smashexcludes: "ale,flexCounter,hardware,kni,pulse,strata"
+  ingestexclude: "/Sysdb/cell/1/agent,/Sysdb/cell/2/agent"
+
+# # OOB Management network default gateway.
+# mgmt_gateway: "10.205.15.1"
+
+#
+# MGMT VRF settings
+#
+mgmt_vrf_routing: true
+mgmt_interface_vrf: "mgmt"
+
+# #
+# # Name server
+# #
+# name_server:
+#   source:
+#     vrf: "mgmt"
+#   nodes:
+#     - "10.205.15.1"
+
+# NTP Servers config
+# First NTP server will be preferred
+# Sourced from Managment VRF
+ntp:
+  servers:
+  - name: se.pool.ntp.org
+    local_interface: Management1
+    preferred: true
+    version: 4
+    vrf: mgmt
+
+# Stuff for validate_state
+ansible_user: cvpadmin
+ansible_password: arista123
+ansible_network_os: eos
+ansible_become: yes
+ansible_become_method: enable
+validation_mode_loose: true
+ansible_httpapi_use_ssl: true
+ansible_httpapi_validate_certs: false
+
+#
+# BGP peer groups passwords
+#
+bgp_peer_groups:
+  evpn_overlay_peers:
+      name: "EVPN-OVERLAY-PEERS"
+      password: $1c$U4tL2vQP9QwZlxIV1K3/pw==
+  ipv4_underlay_peers:
+      name: "IPv4-UNDERLAY-PEERS"
+      password: "$1c$U4tL2vQP9QwZlxIV1K3/pw=="
+  mlag_ipv4_underlay_peer:
+      name: "MLAG-IPv4-UNDERLAY-PEER"
+      password: "$1c$U4tL2vQP9QwZlxIV1K3/pw=="
+
+underlay_filter_redistribute_connected: false
+bgp_update_wait_install: false
+
+#
+# Internal VLAN order
+#
+internal_vlan_order:
+  allocation: "ascending"
+  range:
+    beginning: 3700
+    ending: 3900
+
+#
+# p2p mtu for fitting VXLAN
+#
+p2p_uplinks_mtu: 1500
+
+#
+# BGP max-paths and ecmp
+#
+bgp_maximum_paths: 2
+bgp_ecmp: 2
+evpn_ebgp_multihop: 4
+
+#
+# EVPN prevent readvertising routes
+#
+evpn_prevent_readvertise_to_server: true
+
+#
+# EVPN multicast
+#
+underlay_multicast: True
+# evpn_multicast: True
+
+#
+# Disable vlan aware bundles
+#
+evpn_vxlan_vlan_aware_bundles: false
+
+#
+# EVPN Overlay settings
+#
+
+overlay_rd_type:
+  admin_subfield: overlay_loopback
+overlay_rt_type:
+  admin_subfield: 65000
+  
+#
+# BFD settings
+#
+bfd_multihop:
+  interval: 5000
+  min_rx: 5000
+  multiplier: 3
+
+# L3 Edge contruct for DCI
+l3_edge:
+  p2p_links_ip_pools:
+    - name: "borderleaf_dci_pool"
+      ipv4_pool: "10.0.0.0/24"
+
+#
+# p2p links
+#
+  p2p_links:
+
+#
+# DC1 to DC2
+#
+    - nodes: [ dc1-leaf1, dc2-leaf1 ]
+      id: 1
+      interfaces: [ Ethernet7, Ethernet7 ]
+      as: [ "65101", "65201" ]
+      ip_pool: borderleaf_dci_pool
+      bfd: false
+      include_in_underlay_protocol: true
+
+    - nodes: [ dc1-leaf1, dc2-leaf2 ]
+      id: 2
+      interfaces: [ Ethernet8, Ethernet8 ]
+      as: [ "65101", "65201" ]
+      ip_pool: borderleaf_dci_pool
+      bfd: false
+      include_in_underlay_protocol: true
+
+    - nodes: [ dc1-leaf2, dc2-leaf2 ]
+      id: 3
+      interfaces: [ Ethernet7, Ethernet7 ]
+      as: [ "65101", "65201" ]
+      ip_pool: borderleaf_dci_pool
+      bfd: false
+      include_in_underlay_protocol: true
+
+    - nodes: [ dc1-leaf2, dc2-leaf1 ]
+      id: 4
+      interfaces: [ Ethernet8, Ethernet8 ]
+      as: [ "65101", "65201" ]
+      ip_pool: borderleaf_dci_pool
+      bfd: false
+      include_in_underlay_protocol: true

@@ -1,0 +1,65 @@
+tenants:
+  - name: "FWTEST"
+    mac_vrf_vni_base: 10000
+    # evpn_l3_multicast:
+    #   enabled: true
+    #   evpn_underlay_l3_multicast_group_ipv4_pool: 225.0.0.0/16
+    # evpn_l2_multicast:
+    #   enabled: true
+    #   underlay_l2_multicast_group_ipv4_pool: 225.1.0.0/16
+
+    l2vlans:
+      - id: 2
+        name: TEST_VLAN2
+        tags:
+        - fabricwide
+
+    vrfs:
+
+      - name: "FW_TEST1"
+        vrf_vni: 1
+
+        vtep_diagnostic:
+          loopback: 3
+          loopback_description: "IGMP snooping querier"
+          loopback_ip_range: 10.255.0.0/24
+
+        # static_routes:
+        #   - destination_address_prefix: 0.0.0.0/0
+        #     gateway: 10.100.0.254
+        #     nodes: [ dc1-leaf1, dc1-leaf2, dc2-leaf1, dc2-leaf2 ]
+        # redistribute_static: true
+
+        bgp_peer_groups:
+          - name: "LISTENRANGE" 
+            nodes:
+              - dc1-leaf1
+              - dc1-leaf2
+              - dc2-leaf1
+              - dc2-leaf2
+            remote_as: 65535
+            local_as: 65534
+
+        svis:
+
+          - id: 10
+            name: TEST_VLAN10
+            enabled: true
+            mtu: 1400
+            tags:
+            - fabricwide
+            ip_address_virtual: 10.10.0.1/24
+            igmp_snooping_querier:
+              enabled: True
+              version: 3
+
+          - id: 100
+            name: TEST_VLAN100
+            enabled: true
+            mtu: 1400
+            tags:
+            - fabricwide
+            ip_address_virtual: 10.100.0.1/24
+            igmp_snooping_querier:
+              enabled: True
+              version: 3

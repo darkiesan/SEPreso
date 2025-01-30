@@ -1,0 +1,58 @@
+servers:
+#
+# MLAG
+#
+
+  - name: "SERVER_GW1"
+    adapters:
+    - mode: access
+      port_channel:
+        description: SERVER_GW1
+        mode: active
+      endpoint_ports:
+      - Eth0
+      - Eth1
+      switch_ports:
+      - Ethernet1
+      - Ethernet1
+      switches:
+      - dc1-leaf1
+      - dc1-leaf2 
+      spanning_tree_portfast: edge
+      vlans: '100'
+
+  - name: "SERVER1-1"
+    adapters:
+    - mode: access
+      port_channel:
+        description: SERVER1-1
+        mode: active
+      endpoint_ports:
+      - Eth0
+      - Eth1
+      switch_ports:
+      - Ethernet2
+      - Ethernet2
+      switches:
+      - dc1-leaf1
+      - dc1-leaf2 
+      spanning_tree_portfast: edge
+      vlans: '10'
+
+  - name: "SERVER1-2"
+    adapters:
+    - mode: access
+      port_channel:
+        description: SERVER1-2
+        mode: active
+      endpoint_ports:
+      - Eth0
+      - Eth1
+      switch_ports:
+      - Ethernet1
+      - Ethernet1
+      switches:
+      - dc1-leaf3
+      - dc1-leaf4 
+      spanning_tree_portfast: edge
+      vlans: '10'
