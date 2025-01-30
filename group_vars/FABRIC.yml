@@ -63,8 +63,8 @@ sflow:
 #
 # MGMT VRF settings
 #
-# mgmt_vrf_routing: true
-# mgmt_interface_vrf: "mgmt"
+mgmt_vrf_routing: true
+mgmt_interface_vrf: "default"
 
 # #
 # # Name server

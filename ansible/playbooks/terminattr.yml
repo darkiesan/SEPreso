@@ -1,0 +1,13 @@
+---
+  - hosts: all
+    gather_facts: no
+    tasks: 
+    - name: Restart terminattr
+      eos_command:
+        commands:
+          - enable
+          - configure
+          - daemon TerminAttr
+          - shutdown
+          - no shutdown
+          - exit

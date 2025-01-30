@@ -14,6 +14,9 @@ router_bgp:
   maximum_paths:
     paths: 2
     ecmp: 2
+  redistribute:
+    connected:
+      enabled: true
   peer_groups:
   - name: IPv4-UNDERLAY-PEERS
     type: ipv4
@@ -24,8 +27,6 @@ router_bgp:
     peer_groups:
     - name: IPv4-UNDERLAY-PEERS
       activate: true
-  redistribute_routes:
-  - source_protocol: connected
   neighbors:
   - ip_address: 10.2.2.1
     peer_group: IPv4-UNDERLAY-PEERS
@@ -49,33 +50,32 @@ router_bgp:
     description: dc2-leaf4_Ethernet9
 service_routing_protocols_model: multi-agent
 ip_routing: true
-router_multicast:
-  ipv4:
-    routing: true
 vlan_internal_order:
   allocation: ascending
   range:
     beginning: 3700
     ending: 3900
+aaa_root:
+  disabled: true
+config_end: true
+enable_password:
+  disabled: true
+transceiver_qsfp_default_mode_4x10: true
 spanning_tree:
   mode: none
 local_users:
-- name: cvpadmin
-  privilege: 15
-  role: network-admin
-  sha512_password: $6$0u6SKAf4I4MFLihf$qoFU0/gkY.50pXWEbZCRTg9AspzpOndSDCvKx04Z05rqKJfCVJOBtDBTpXEIM2XTLLsG2T/6E4sBtatBXjbSY/
 - name: df
   privilege: 15
   role: network-admin
   sha512_password: $6$W2.UOKH77rTBZ.I6$Hk44.wydPL9f0U2p7GNJPKcljfGSR81fopt6k3WvM1g3h9Fhr7XxwdIte1KC1ui3g9aKEmLYrhcyGom9kaVxy1
 vrfs:
-- name: mgmt
+- name: default
   ip_routing: true
 management_interfaces:
 - name: Management1
-  description: oob_management
+  description: OOB_MANAGEMENT
   shutdown: false
-  vrf: mgmt
+  vrf: default
   ip_address: 192.168.0.21/24
   gateway: null
   type: oob
@@ -83,59 +83,51 @@ mac_address_table:
   aging_time: 901
 management_api_http:
   enable_vrfs:
-  - name: mgmt
+  - name: default
   enable_https: true
 ethernet_interfaces:
 - name: Ethernet1
   peer: dc2-leaf1
   peer_interface: Ethernet9
   peer_type: l3leaf
-  description: P2P_LINK_TO_DC2-LEAF1_Ethernet9
+  description: P2P_dc2-leaf1_Ethernet9
   shutdown: false
   mtu: 1500
-  type: routed
+  switchport:
+    enabled: false
   ip_address: 10.2.2.0/31
-  pim:
-    ipv4:
-      sparse_mode: true
 - name: Ethernet2
   peer: dc2-leaf2
   peer_interface: Ethernet9
   peer_type: l3leaf
-  description: P2P_LINK_TO_DC2-LEAF2_Ethernet9
+  description: P2P_dc2-leaf2_Ethernet9
   shutdown: false
   mtu: 1500
-  type: routed
+  switchport:
+    enabled: false
   ip_address: 10.2.2.4/31
-  pim:
-    ipv4:
-      sparse_mode: true
 - name: Ethernet3
   peer: dc2-leaf3
   peer_interface: Ethernet9
   peer_type: l3leaf
-  description: P2P_LINK_TO_DC2-LEAF3_Ethernet9
+  description: P2P_dc2-leaf3_Ethernet9
   shutdown: false
   mtu: 1500
-  type: routed
+  switchport:
+    enabled: false
   ip_address: 10.2.2.8/31
-  pim:
-    ipv4:
-      sparse_mode: true
 - name: Ethernet4
   peer: dc2-leaf4
   peer_interface: Ethernet9
   peer_type: l3leaf
-  description: P2P_LINK_TO_DC2-LEAF4_Ethernet9
+  description: P2P_dc2-leaf4_Ethernet9
   shutdown: false
   mtu: 1500
-  type: routed
+  switchport:
+    enabled: false
   ip_address: 10.2.2.12/31
-  pim:
-    ipv4:
-      sparse_mode: true
 loopback_interfaces:
 - name: Loopback0
-  description: EVPN_Overlay_Peering
+  description: ROUTER_ID
   shutdown: false
   ip_address: 10.2.0.1/32

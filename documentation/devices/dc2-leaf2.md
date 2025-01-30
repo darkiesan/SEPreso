@@ -9,8 +9,8 @@
   - [Management API HTTP](#management-api-http)
 - [Authentication](#authentication)
   - [Local Users](#local-users)
+  - [Enable Password](#enable-password)
 - [Monitoring](#monitoring)
-  - [TerminAttr Daemon](#terminattr-daemon)
   - [SFlow](#sflow)
 - [MLAG](#mlag)
   - [MLAG Summary](#mlag-summary)
@@ -45,9 +45,8 @@
   - [Router BFD](#router-bfd)
 - [Multicast](#multicast)
   - [IP IGMP Snooping](#ip-igmp-snooping)
-  - [Router Multicast](#router-multicast)
-  - [PIM Sparse Mode](#pim-sparse-mode)
 - [Filters](#filters)
+  - [Prefix-lists](#prefix-lists)
   - [Route-maps](#route-maps)
 - [VRF Instances](#vrf-instances)
   - [VRF Instances Summary](#vrf-instances-summary)
@@ -66,22 +65,21 @@
 
 | Management Interface | Description | Type | VRF | IP Address | Gateway |
 | -------------------- | ----------- | ---- | --- | ---------- | ------- |
-| Management1 | oob_management | oob | mgmt | 192.168.0.24/24 | - |
+| Management1 | OOB_MANAGEMENT | oob | default | 192.168.0.24/24 | - |
 
 ##### IPv6
 
 | Management Interface | Description | Type | VRF | IPv6 Address | IPv6 Gateway |
 | -------------------- | ----------- | ---- | --- | ------------ | ------------ |
-| Management1 | oob_management | oob | mgmt | - | - |
+| Management1 | OOB_MANAGEMENT | oob | default | - | - |
 
 #### Management Interfaces Device Configuration
 
 ```eos
 !
 interface Management1
-   description oob_management
+   description OOB_MANAGEMENT
    no shutdown
-   vrf mgmt
    ip address 192.168.0.24/24
 ```
 
@@ -106,13 +104,13 @@ clock timezone Europe/Stockholm
 
 | Server | VRF | Preferred | Burst | iBurst | Version | Min Poll | Max Poll | Local-interface | Key |
 | ------ | --- | --------- | ----- | ------ | ------- | -------- | -------- | --------------- | --- |
-| se.pool.ntp.org | mgmt | True | - | - | 4 | - | - | Management1 | - |
+| se.pool.ntp.org | default | True | - | - | 4 | - | - | Management1 | - |
 
 #### NTP Device Configuration
 
 ```eos
 !
-ntp server vrf mgmt se.pool.ntp.org prefer version 4 local-interface Management1
+ntp server se.pool.ntp.org prefer version 4 local-interface Management1
 ```
 
 ### Management API HTTP
@@ -127,7 +125,7 @@ ntp server vrf mgmt se.pool.ntp.org prefer version 4 local-interface Management1
 
 | VRF Name | IPv4 ACL | IPv6 ACL |
 | -------- | -------- | -------- |
-| mgmt | - | - |
+| default | - | - |
 
 #### Management API HTTP Device Configuration
 
@@ -137,7 +135,7 @@ management api http-commands
    protocol https
    no shutdown
    !
-   vrf mgmt
+   vrf default
       no shutdown
 ```
 
@@ -149,35 +147,20 @@ management api http-commands
 
 | User | Privilege | Role | Disabled | Shell |
 | ---- | --------- | ---- | -------- | ----- |
-| cvpadmin | 15 | network-admin | False | - |
 | df | 15 | network-admin | False | - |
 
 #### Local Users Device Configuration
 
 ```eos
 !
-username cvpadmin privilege 15 role network-admin secret sha512 <removed>
 username df privilege 15 role network-admin secret sha512 <removed>
 ```
 
+### Enable Password
+
+Enable password has been disabled
+
 ## Monitoring
-
-### TerminAttr Daemon
-
-#### TerminAttr Daemon Summary
-
-| CV Compression | CloudVision Servers | VRF | Authentication | Smash Excludes | Ingest Exclude | Bypass AAA |
-| -------------- | ------------------- | --- | -------------- | -------------- | -------------- | ---------- |
-| gzip | 192.168.0.5:9910 | mgmt | token,/mnt/flash/token | ale,flexCounter,hardware,kni,pulse,strata | /Sysdb/cell/1/agent,/Sysdb/cell/2/agent | False |
-
-#### TerminAttr Daemon Device Configuration
-
-```eos
-!
-daemon TerminAttr
-   exec /usr/bin/TerminAttr -cvaddr=192.168.0.5:9910 -cvauth=token,/mnt/flash/token -cvvrf=mgmt -smashexcludes=ale,flexCounter,hardware,kni,pulse,strata -ingestexclude=/Sysdb/cell/1/agent,/Sysdb/cell/2/agent -taillogs
-   no shutdown
-```
 
 ### SFlow
 
@@ -274,9 +257,9 @@ vlan internal order ascending range 3700 3900
 | 2 | TEST_VLAN2 | - |
 | 10 | TEST_VLAN10 | - |
 | 100 | TEST_VLAN100 | - |
-| 3000 | MLAG_iBGP_FW_TEST1 | LEAF_PEER_L3 |
-| 4093 | LEAF_PEER_L3 | LEAF_PEER_L3 |
-| 4094 | MLAG_PEER | MLAG |
+| 3000 | MLAG_L3_VRF_FW_TEST1 | MLAG |
+| 4093 | MLAG_L3 | MLAG |
+| 4094 | MLAG | MLAG |
 
 ### VLANs Device Configuration
 
@@ -292,15 +275,15 @@ vlan 100
    name TEST_VLAN100
 !
 vlan 3000
-   name MLAG_iBGP_FW_TEST1
-   trunk group LEAF_PEER_L3
+   name MLAG_L3_VRF_FW_TEST1
+   trunk group MLAG
 !
 vlan 4093
-   name LEAF_PEER_L3
-   trunk group LEAF_PEER_L3
+   name MLAG_L3
+   trunk group MLAG
 !
 vlan 4094
-   name MLAG_PEER
+   name MLAG
    trunk group MLAG
 ```
 
@@ -355,73 +338,71 @@ interface defaults
 
 | Interface | Description | Mode | VLANs | Native VLAN | Trunk Group | Channel-Group |
 | --------- | ----------- | ---- | ----- | ----------- | ----------- | ------------- |
-| Ethernet1 | SERVER_GW2_Eth1 | *access | *100 | *- | *- | 1 |
-| Ethernet2 | SERVER2-1_Eth1 | *access | *10 | *- | *- | 2 |
-| Ethernet11 | MLAG_PEER_dc2-leaf1_Ethernet11 | *trunk | *- | *- | *['LEAF_PEER_L3', 'MLAG'] | 11 |
-| Ethernet12 | MLAG_PEER_dc2-leaf1_Ethernet12 | *trunk | *- | *- | *['LEAF_PEER_L3', 'MLAG'] | 11 |
+| Ethernet1 | SERVER_SERVER_GW2_Eth1 | *access | *100 | *- | *- | 1 |
+| Ethernet2 | SERVER_SERVER2-1_Eth1 | *access | *10 | *- | *- | 2 |
+| Ethernet11 | MLAG_dc2-leaf1_Ethernet11 | *trunk | *- | *- | *MLAG | 11 |
+| Ethernet12 | MLAG_dc2-leaf1_Ethernet12 | *trunk | *- | *- | *MLAG | 11 |
 
 *Inherited from Port-Channel Interface
 
 ##### IPv4
 
-| Interface | Description | Type | Channel Group | IP Address | VRF |  MTU | Shutdown | ACL In | ACL Out |
-| --------- | ----------- | -----| ------------- | ---------- | ----| ---- | -------- | ------ | ------- |
-| Ethernet7 | P2P_LINK_TO_dc1-leaf2_Ethernet7 | routed | - | 10.0.0.5/31 | default | 1500 | False | - | - |
-| Ethernet8 | P2P_LINK_TO_dc1-leaf1_Ethernet8 | routed | - | 10.0.0.3/31 | default | 1500 | False | - | - |
-| Ethernet9 | P2P_LINK_TO_DC2-SPINE1_Ethernet2 | routed | - | 10.2.2.5/31 | default | 1500 | False | - | - |
-| Ethernet10 | P2P_LINK_TO_DC2-SPINE2_Ethernet2 | routed | - | 10.2.2.7/31 | default | 1500 | False | - | - |
+| Interface | Description | Channel Group | IP Address | VRF |  MTU | Shutdown | ACL In | ACL Out |
+| --------- | ----------- | ------------- | ---------- | ----| ---- | -------- | ------ | ------- |
+| Ethernet7 | P2P_dc1-leaf2_Ethernet7 | - | 10.0.0.5/31 | default | 1500 | False | - | - |
+| Ethernet8 | P2P_dc1-leaf1_Ethernet8 | - | 10.0.0.3/31 | default | 1500 | False | - | - |
+| Ethernet9 | P2P_dc2-spine1_Ethernet2 | - | 10.2.2.5/31 | default | 1500 | False | - | - |
+| Ethernet10 | P2P_dc2-spine2_Ethernet2 | - | 10.2.2.7/31 | default | 1500 | False | - | - |
 
 #### Ethernet Interfaces Device Configuration
 
 ```eos
 !
 interface Ethernet1
-   description SERVER_GW2_Eth1
+   description SERVER_SERVER_GW2_Eth1
    no shutdown
    channel-group 1 mode active
 !
 interface Ethernet2
-   description SERVER2-1_Eth1
+   description SERVER_SERVER2-1_Eth1
    no shutdown
    channel-group 2 mode active
 !
 interface Ethernet7
-   description P2P_LINK_TO_dc1-leaf2_Ethernet7
+   description P2P_dc1-leaf2_Ethernet7
    no shutdown
    mtu 1500
    no switchport
    ip address 10.0.0.5/31
 !
 interface Ethernet8
-   description P2P_LINK_TO_dc1-leaf1_Ethernet8
+   description P2P_dc1-leaf1_Ethernet8
    no shutdown
    mtu 1500
    no switchport
    ip address 10.0.0.3/31
 !
 interface Ethernet9
-   description P2P_LINK_TO_DC2-SPINE1_Ethernet2
+   description P2P_dc2-spine1_Ethernet2
    no shutdown
    mtu 1500
    no switchport
    ip address 10.2.2.5/31
-   pim ipv4 sparse-mode
 !
 interface Ethernet10
-   description P2P_LINK_TO_DC2-SPINE2_Ethernet2
+   description P2P_dc2-spine2_Ethernet2
    no shutdown
    mtu 1500
    no switchport
    ip address 10.2.2.7/31
-   pim ipv4 sparse-mode
 !
 interface Ethernet11
-   description MLAG_PEER_dc2-leaf1_Ethernet11
+   description MLAG_dc2-leaf1_Ethernet11
    no shutdown
    channel-group 11 mode active
 !
 interface Ethernet12
-   description MLAG_PEER_dc2-leaf1_Ethernet12
+   description MLAG_dc2-leaf1_Ethernet12
    no shutdown
    channel-group 11 mode active
 ```
@@ -432,39 +413,40 @@ interface Ethernet12
 
 ##### L2
 
-| Interface | Description | Type | Mode | VLANs | Native VLAN | Trunk Group | LACP Fallback Timeout | LACP Fallback Mode | MLAG ID | EVPN ESI |
-| --------- | ----------- | ---- | ---- | ----- | ----------- | ------------| --------------------- | ------------------ | ------- | -------- |
-| Port-Channel1 | SERVER_GW2_SERVER_GW2 | switched | access | 100 | - | - | - | - | 1 | - |
-| Port-Channel2 | SERVER2-1_SERVER2-1 | switched | access | 10 | - | - | - | - | 2 | - |
-| Port-Channel11 | MLAG_PEER_dc2-leaf1_Po11 | switched | trunk | - | - | ['LEAF_PEER_L3', 'MLAG'] | - | - | - | - |
+| Interface | Description | Mode | VLANs | Native VLAN | Trunk Group | LACP Fallback Timeout | LACP Fallback Mode | MLAG ID | EVPN ESI |
+| --------- | ----------- | ---- | ----- | ----------- | ------------| --------------------- | ------------------ | ------- | -------- |
+| Port-Channel1 | SERVER_GW2 | access | 100 | - | - | - | - | 1 | - |
+| Port-Channel2 | SERVER2-1 | access | 10 | - | - | - | - | 2 | - |
+| Port-Channel11 | MLAG_dc2-leaf1_Port-Channel11 | trunk | - | - | MLAG | - | - | - | - |
 
 #### Port-Channel Interfaces Device Configuration
 
 ```eos
 !
 interface Port-Channel1
-   description SERVER_GW2_SERVER_GW2
+   description SERVER_GW2
    no shutdown
-   switchport
    switchport access vlan 100
+   switchport mode access
+   switchport
    mlag 1
    spanning-tree portfast
 !
 interface Port-Channel2
-   description SERVER2-1_SERVER2-1
+   description SERVER2-1
    no shutdown
-   switchport
    switchport access vlan 10
+   switchport mode access
+   switchport
    mlag 2
    spanning-tree portfast
 !
 interface Port-Channel11
-   description MLAG_PEER_dc2-leaf1_Po11
+   description MLAG_dc2-leaf1_Port-Channel11
    no shutdown
-   switchport
    switchport mode trunk
-   switchport trunk group LEAF_PEER_L3
    switchport trunk group MLAG
+   switchport
 ```
 
 ### Loopback Interfaces
@@ -475,16 +457,16 @@ interface Port-Channel11
 
 | Interface | Description | VRF | IP Address |
 | --------- | ----------- | --- | ---------- |
-| Loopback0 | EVPN_Overlay_Peering | default | 10.2.0.4/32 |
-| Loopback1 | VTEP_VXLAN_Tunnel_Source | default | 10.2.1.3/32 |
+| Loopback0 | ROUTER_ID | default | 10.2.0.4/32 |
+| Loopback1 | VXLAN_TUNNEL_SOURCE | default | 10.2.1.3/32 |
 | Loopback3 | IGMP snooping querier | FW_TEST1 | 10.255.0.4/32 |
 
 ##### IPv6
 
 | Interface | Description | VRF | IPv6 Address |
 | --------- | ----------- | --- | ------------ |
-| Loopback0 | EVPN_Overlay_Peering | default | - |
-| Loopback1 | VTEP_VXLAN_Tunnel_Source | default | - |
+| Loopback0 | ROUTER_ID | default | - |
+| Loopback1 | VXLAN_TUNNEL_SOURCE | default | - |
 | Loopback3 | IGMP snooping querier | FW_TEST1 | - |
 
 #### Loopback Interfaces Device Configuration
@@ -492,12 +474,12 @@ interface Port-Channel11
 ```eos
 !
 interface Loopback0
-   description EVPN_Overlay_Peering
+   description ROUTER_ID
    no shutdown
    ip address 10.2.0.4/32
 !
 interface Loopback1
-   description VTEP_VXLAN_Tunnel_Source
+   description VXLAN_TUNNEL_SOURCE
    no shutdown
    ip address 10.2.1.3/32
 !
@@ -516,19 +498,19 @@ interface Loopback3
 | --------- | ----------- | --- | ---- | -------- |
 | Vlan10 | TEST_VLAN10 | FW_TEST1 | 1400 | False |
 | Vlan100 | TEST_VLAN100 | FW_TEST1 | 1400 | False |
-| Vlan3000 | MLAG_PEER_L3_iBGP: vrf FW_TEST1 | FW_TEST1 | 1500 | False |
-| Vlan4093 | MLAG_PEER_L3_PEERING | default | 1500 | False |
-| Vlan4094 | MLAG_PEER | default | 1500 | False |
+| Vlan3000 | MLAG_L3_VRF_FW_TEST1 | FW_TEST1 | 1500 | False |
+| Vlan4093 | MLAG_L3 | default | 1500 | False |
+| Vlan4094 | MLAG | default | 1500 | False |
 
 ##### IPv4
 
-| Interface | VRF | IP Address | IP Address Virtual | IP Router Virtual Address | VRRP | ACL In | ACL Out |
-| --------- | --- | ---------- | ------------------ | ------------------------- | ---- | ------ | ------- |
-| Vlan10 |  FW_TEST1  |  -  |  10.10.0.1/24  |  -  |  -  |  -  |  -  |
-| Vlan100 |  FW_TEST1  |  -  |  10.100.0.1/24  |  -  |  -  |  -  |  -  |
-| Vlan3000 |  FW_TEST1  |  10.2.4.1/31  |  -  |  -  |  -  |  -  |  -  |
-| Vlan4093 |  default  |  10.2.4.1/31  |  -  |  -  |  -  |  -  |  -  |
-| Vlan4094 |  default  |  10.2.3.1/31  |  -  |  -  |  -  |  -  |  -  |
+| Interface | VRF | IP Address | IP Address Virtual | IP Router Virtual Address | ACL In | ACL Out |
+| --------- | --- | ---------- | ------------------ | ------------------------- | ------ | ------- |
+| Vlan10 |  FW_TEST1  |  -  |  10.10.0.1/24  |  -  |  -  |  -  |
+| Vlan100 |  FW_TEST1  |  -  |  10.100.0.1/24  |  -  |  -  |  -  |
+| Vlan3000 |  FW_TEST1  |  10.2.4.1/31  |  -  |  -  |  -  |  -  |
+| Vlan4093 |  default  |  10.2.4.1/31  |  -  |  -  |  -  |  -  |
+| Vlan4094 |  default  |  10.2.3.1/31  |  -  |  -  |  -  |  -  |
 
 #### VLAN Interfaces Device Configuration
 
@@ -549,21 +531,20 @@ interface Vlan100
    ip address virtual 10.100.0.1/24
 !
 interface Vlan3000
-   description MLAG_PEER_L3_iBGP: vrf FW_TEST1
+   description MLAG_L3_VRF_FW_TEST1
    no shutdown
    mtu 1500
    vrf FW_TEST1
    ip address 10.2.4.1/31
 !
 interface Vlan4093
-   description MLAG_PEER_L3_PEERING
+   description MLAG_L3
    no shutdown
    mtu 1500
    ip address 10.2.4.1/31
-   pim ipv4 sparse-mode
 !
 interface Vlan4094
-   description MLAG_PEER
+   description MLAG
    no shutdown
    mtu 1500
    no autostate
@@ -641,7 +622,6 @@ ip virtual-router mac-address 00:11:22:33:44:55
 | --- | --------------- |
 | default | True |
 | FW_TEST1 | True |
-| mgmt | True |
 
 #### IP Routing Device Configuration
 
@@ -649,7 +629,6 @@ ip virtual-router mac-address 00:11:22:33:44:55
 !
 ip routing
 ip routing vrf FW_TEST1
-ip routing vrf mgmt
 ```
 
 ### IPv6 Routing
@@ -659,8 +638,8 @@ ip routing vrf mgmt
 | VRF | Routing Enabled |
 | --- | --------------- |
 | default | False |
+| default | false |
 | FW_TEST1 | false |
-| mgmt | false |
 
 ### Router BGP
 
@@ -738,9 +717,9 @@ ASN Notation: asplain
 
 ##### EVPN Peer Groups
 
-| Peer Group | Activate | Encapsulation |
-| ---------- | -------- | ------------- |
-| EVPN-OVERLAY-PEERS | True | default |
+| Peer Group | Activate | Route-map In | Route-map Out | Encapsulation |
+| ---------- | -------- | ------------ | ------------- | ------------- |
+| EVPN-OVERLAY-PEERS | True |  - | - | default |
 
 #### Router BGP VLANs
 
@@ -762,8 +741,8 @@ ASN Notation: asplain
 !
 router bgp 65201
    router-id 10.2.0.4
-   maximum-paths 2 ecmp 2
    no bgp default ipv4-unicast
+   maximum-paths 2 ecmp 2
    distance bgp 150 200 200
    graceful-restart restart-time 300
    graceful-restart
@@ -786,32 +765,32 @@ router bgp 65201
    neighbor MLAG-IPv4-UNDERLAY-PEER remote-as 65201
    neighbor MLAG-IPv4-UNDERLAY-PEER next-hop-self
    neighbor MLAG-IPv4-UNDERLAY-PEER description dc2-leaf1
+   neighbor MLAG-IPv4-UNDERLAY-PEER route-map RM-MLAG-PEER-IN in
    neighbor MLAG-IPv4-UNDERLAY-PEER password 7 <removed>
    neighbor MLAG-IPv4-UNDERLAY-PEER send-community
    neighbor MLAG-IPv4-UNDERLAY-PEER maximum-routes 12000
-   neighbor MLAG-IPv4-UNDERLAY-PEER route-map RM-MLAG-PEER-IN in
    neighbor 10.0.0.2 peer group IPv4-UNDERLAY-PEERS
    neighbor 10.0.0.2 remote-as 65101
-   neighbor 10.0.0.2 description dc1-leaf1
    no neighbor 10.0.0.2 bfd
+   neighbor 10.0.0.2 description dc1-leaf1
    neighbor 10.0.0.4 peer group IPv4-UNDERLAY-PEERS
    neighbor 10.0.0.4 remote-as 65101
-   neighbor 10.0.0.4 description dc1-leaf2
    no neighbor 10.0.0.4 bfd
+   neighbor 10.0.0.4 description dc1-leaf2
    neighbor 10.1.0.3 peer group EVPN-OVERLAY-PEERS
    neighbor 10.1.0.3 remote-as 65101
-   neighbor 10.1.0.3 description dc1-leaf1
+   neighbor 10.1.0.3 description dc1-leaf1_Loopback0
    neighbor 10.1.0.3 route-map RM-EVPN-FILTER-AS65101 out
    neighbor 10.1.0.4 peer group EVPN-OVERLAY-PEERS
    neighbor 10.1.0.4 remote-as 65101
-   neighbor 10.1.0.4 description dc1-leaf2
+   neighbor 10.1.0.4 description dc1-leaf2_Loopback0
    neighbor 10.1.0.4 route-map RM-EVPN-FILTER-AS65101 out
    neighbor 10.2.0.5 peer group EVPN-OVERLAY-PEERS
    neighbor 10.2.0.5 remote-as 65202
-   neighbor 10.2.0.5 description dc2-leaf3
+   neighbor 10.2.0.5 description dc2-leaf3_Loopback0
    neighbor 10.2.0.6 peer group EVPN-OVERLAY-PEERS
    neighbor 10.2.0.6 remote-as 65202
-   neighbor 10.2.0.6 description dc2-leaf4
+   neighbor 10.2.0.6 description dc2-leaf4_Loopback0
    neighbor 10.2.2.4 peer group IPv4-UNDERLAY-PEERS
    neighbor 10.2.2.4 remote-as 65200
    neighbor 10.2.2.4 description dc2-spine1_Ethernet2
@@ -819,8 +798,13 @@ router bgp 65201
    neighbor 10.2.2.6 remote-as 65200
    neighbor 10.2.2.6 description dc2-spine2_Ethernet2
    neighbor 10.2.4.0 peer group MLAG-IPv4-UNDERLAY-PEER
-   neighbor 10.2.4.0 description dc2-leaf1
+   neighbor 10.2.4.0 description dc2-leaf1_Vlan4093
    redistribute connected
+   !
+   vlan 2
+      rd 10.2.0.4:10002
+      route-target both 65000:10002
+      redistribute learned
    !
    vlan 10
       rd 10.2.0.4:10010
@@ -830,11 +814,6 @@ router bgp 65201
    vlan 100
       rd 10.2.0.4:10100
       route-target both 65000:10100
-      redistribute learned
-   !
-   vlan 2
-      rd 10.2.0.4:10002
-      route-target both 65000:10002
       redistribute learned
    !
    address-family evpn
@@ -851,7 +830,8 @@ router bgp 65201
       route-target export evpn 65000:1
       router-id 10.2.0.4
       neighbor 10.2.4.0 peer group MLAG-IPv4-UNDERLAY-PEER
-      redistribute connected
+      neighbor 10.2.4.0 description dc2-leaf1_Vlan3000
+      redistribute connected route-map RM-CONN-2-BGP-VRFS
 ```
 
 ## BFD
@@ -906,36 +886,36 @@ ip igmp snooping vlan 100 querier address 10.2.0.4
 ip igmp snooping vlan 100 querier version 3
 ```
 
-### Router Multicast
+## Filters
 
-#### IP Router Multicast Summary
+### Prefix-lists
 
-- Routing for IPv4 multicast is enabled.
+#### Prefix-lists Summary
 
-#### Router Multicast Device Configuration
+##### PL-MLAG-PEER-VRFS
+
+| Sequence | Action |
+| -------- | ------ |
+| 10 | permit 10.2.4.0/31 |
+
+#### Prefix-lists Device Configuration
 
 ```eos
 !
-router multicast
-   ipv4
-      routing
+ip prefix-list PL-MLAG-PEER-VRFS
+   seq 10 permit 10.2.4.0/31
 ```
-
-### PIM Sparse Mode
-
-#### PIM Sparse Mode Enabled Interfaces
-
-| Interface Name | VRF Name | IP Version | Border Router | DR Priority | Local Interface |
-| -------------- | -------- | ---------- | ------------- | ----------- | --------------- |
-| Ethernet9 | - | IPv4 | - | - | - |
-| Ethernet10 | - | IPv4 | - | - | - |
-| Vlan4093 | - | IPv4 | - | - | - |
-
-## Filters
 
 ### Route-maps
 
 #### Route-maps Summary
+
+##### RM-CONN-2-BGP-VRFS
+
+| Sequence | Type | Match | Set | Sub-Route-Map | Continue |
+| -------- | ---- | ----- | --- | ------------- | -------- |
+| 10 | deny | ip address prefix-list PL-MLAG-PEER-VRFS | - | - | - |
+| 20 | permit | - | - | - | - |
 
 ##### RM-EVPN-FILTER-AS65101
 
@@ -954,6 +934,11 @@ router multicast
 
 ```eos
 !
+route-map RM-CONN-2-BGP-VRFS deny 10
+   match ip address prefix-list PL-MLAG-PEER-VRFS
+!
+route-map RM-CONN-2-BGP-VRFS permit 20
+!
 route-map RM-EVPN-FILTER-AS65101 deny 10
    match as 65101
 !
@@ -971,24 +956,21 @@ route-map RM-MLAG-PEER-IN permit 10
 | VRF Name | IP Routing |
 | -------- | ---------- |
 | FW_TEST1 | enabled |
-| mgmt | enabled |
 
 ### VRF Instances Device Configuration
 
 ```eos
 !
 vrf instance FW_TEST1
-!
-vrf instance mgmt
 ```
 
 ## Virtual Source NAT
 
 ### Virtual Source NAT Summary
 
-| Source NAT VRF | Source NAT IP Address |
-| -------------- | --------------------- |
-| FW_TEST1 | 10.255.0.4 |
+| Source NAT VRF | Source NAT IPv4 Address | Source NAT IPv6 Address |
+| -------------- | ----------------------- | ----------------------- |
+| FW_TEST1 | 10.255.0.4 | - |
 
 ### Virtual Source NAT Configuration
 

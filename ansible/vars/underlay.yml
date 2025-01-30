@@ -1,0 +1,24 @@
+dc1-spine1:
+  mgmtip: 192.168.0.11/24
+dc1-spine2:
+  mgmtip: 192.168.0.12/24
+dc1-leaf1:
+  mgmtip: 192.168.0.13/24
+dc1-leaf2:
+  mgmtip: 192.168.0.14/24
+dc1-leaf3:
+  mgmtip: 192.168.0.15/24
+dc1-leaf4:
+  mgmtip: 192.168.0.16/24
+dc2-spine1:
+  mgmtip: 192.168.0.21/24
+dc2-spine2:
+  mgmtip: 192.168.0.22/24
+dc2-leaf1:
+  mgmtip: 192.168.0.23/24
+dc2-leaf2:
+  mgmtip: 192.168.0.24/24
+dc2-leaf3:
+  mgmtip: 192.168.0.25/24
+dc2-leaf4: 
+  mgmtip: 192.168.0.26/24

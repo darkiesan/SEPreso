@@ -1,0 +1,17 @@
+---
+- hosts: all
+  gather_facts: no
+  tasks:
+  - name: Register variables
+    include_vars:
+      file: "{{lookup('env','PWD')}}/vars/underlay.yml"
+      name: underlay
+
+  - name: Create a configuration for management1 interfaces
+    template:
+     src: "{{lookup('env','PWD')}}/templates/mgmt_interface.j2"
+     dest: "{{lookup('env','PWD')}}/configs/{{inventory_hostname}}_mgmtip.cfg"
+
+  - name: Upload config
+    eos_config:
+      src: "{{lookup('env','PWD')}}/configs/{{inventory_hostname}}_mgmtip.cfg"

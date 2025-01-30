@@ -9,8 +9,8 @@
   - [Management API HTTP](#management-api-http)
 - [Authentication](#authentication)
   - [Local Users](#local-users)
+  - [Enable Password](#enable-password)
 - [Monitoring](#monitoring)
-  - [TerminAttr Daemon](#terminattr-daemon)
   - [SFlow](#sflow)
 - [Spanning Tree](#spanning-tree)
   - [Spanning Tree Summary](#spanning-tree-summary)
@@ -31,9 +31,6 @@
   - [IP Routing](#ip-routing)
   - [IPv6 Routing](#ipv6-routing)
   - [Router BGP](#router-bgp)
-- [Multicast](#multicast)
-  - [Router Multicast](#router-multicast)
-  - [PIM Sparse Mode](#pim-sparse-mode)
 - [VRF Instances](#vrf-instances)
   - [VRF Instances Summary](#vrf-instances-summary)
   - [VRF Instances Device Configuration](#vrf-instances-device-configuration)
@@ -48,22 +45,21 @@
 
 | Management Interface | Description | Type | VRF | IP Address | Gateway |
 | -------------------- | ----------- | ---- | --- | ---------- | ------- |
-| Management1 | oob_management | oob | mgmt | 192.168.0.11/24 | - |
+| Management1 | OOB_MANAGEMENT | oob | default | 192.168.0.11/24 | - |
 
 ##### IPv6
 
 | Management Interface | Description | Type | VRF | IPv6 Address | IPv6 Gateway |
 | -------------------- | ----------- | ---- | --- | ------------ | ------------ |
-| Management1 | oob_management | oob | mgmt | - | - |
+| Management1 | OOB_MANAGEMENT | oob | default | - | - |
 
 #### Management Interfaces Device Configuration
 
 ```eos
 !
 interface Management1
-   description oob_management
+   description OOB_MANAGEMENT
    no shutdown
-   vrf mgmt
    ip address 192.168.0.11/24
 ```
 
@@ -88,13 +84,13 @@ clock timezone Europe/Stockholm
 
 | Server | VRF | Preferred | Burst | iBurst | Version | Min Poll | Max Poll | Local-interface | Key |
 | ------ | --- | --------- | ----- | ------ | ------- | -------- | -------- | --------------- | --- |
-| se.pool.ntp.org | mgmt | True | - | - | 4 | - | - | Management1 | - |
+| se.pool.ntp.org | default | True | - | - | 4 | - | - | Management1 | - |
 
 #### NTP Device Configuration
 
 ```eos
 !
-ntp server vrf mgmt se.pool.ntp.org prefer version 4 local-interface Management1
+ntp server se.pool.ntp.org prefer version 4 local-interface Management1
 ```
 
 ### Management API HTTP
@@ -109,7 +105,7 @@ ntp server vrf mgmt se.pool.ntp.org prefer version 4 local-interface Management1
 
 | VRF Name | IPv4 ACL | IPv6 ACL |
 | -------- | -------- | -------- |
-| mgmt | - | - |
+| default | - | - |
 
 #### Management API HTTP Device Configuration
 
@@ -119,7 +115,7 @@ management api http-commands
    protocol https
    no shutdown
    !
-   vrf mgmt
+   vrf default
       no shutdown
 ```
 
@@ -131,35 +127,20 @@ management api http-commands
 
 | User | Privilege | Role | Disabled | Shell |
 | ---- | --------- | ---- | -------- | ----- |
-| cvpadmin | 15 | network-admin | False | - |
 | df | 15 | network-admin | False | - |
 
 #### Local Users Device Configuration
 
 ```eos
 !
-username cvpadmin privilege 15 role network-admin secret sha512 <removed>
 username df privilege 15 role network-admin secret sha512 <removed>
 ```
 
+### Enable Password
+
+Enable password has been disabled
+
 ## Monitoring
-
-### TerminAttr Daemon
-
-#### TerminAttr Daemon Summary
-
-| CV Compression | CloudVision Servers | VRF | Authentication | Smash Excludes | Ingest Exclude | Bypass AAA |
-| -------------- | ------------------- | --- | -------------- | -------------- | -------------- | ---------- |
-| gzip | 192.168.0.5:9910 | mgmt | token,/mnt/flash/token | ale,flexCounter,hardware,kni,pulse,strata | /Sysdb/cell/1/agent,/Sysdb/cell/2/agent | False |
-
-#### TerminAttr Daemon Device Configuration
-
-```eos
-!
-daemon TerminAttr
-   exec /usr/bin/TerminAttr -cvaddr=192.168.0.5:9910 -cvauth=token,/mnt/flash/token -cvvrf=mgmt -smashexcludes=ale,flexCounter,hardware,kni,pulse,strata -ingestexclude=/Sysdb/cell/1/agent,/Sysdb/cell/2/agent -taillogs
-   no shutdown
-```
 
 ### SFlow
 
@@ -268,48 +249,44 @@ interface defaults
 
 ##### IPv4
 
-| Interface | Description | Type | Channel Group | IP Address | VRF |  MTU | Shutdown | ACL In | ACL Out |
-| --------- | ----------- | -----| ------------- | ---------- | ----| ---- | -------- | ------ | ------- |
-| Ethernet1 | P2P_LINK_TO_DC1-LEAF1_Ethernet9 | routed | - | 10.1.2.0/31 | default | 1500 | False | - | - |
-| Ethernet2 | P2P_LINK_TO_DC1-LEAF2_Ethernet9 | routed | - | 10.1.2.4/31 | default | 1500 | False | - | - |
-| Ethernet3 | P2P_LINK_TO_DC1-LEAF3_Ethernet9 | routed | - | 10.1.2.8/31 | default | 1500 | False | - | - |
-| Ethernet4 | P2P_LINK_TO_DC1-LEAF4_Ethernet9 | routed | - | 10.1.2.12/31 | default | 1500 | False | - | - |
+| Interface | Description | Channel Group | IP Address | VRF |  MTU | Shutdown | ACL In | ACL Out |
+| --------- | ----------- | ------------- | ---------- | ----| ---- | -------- | ------ | ------- |
+| Ethernet1 | P2P_dc1-leaf1_Ethernet9 | - | 10.1.2.0/31 | default | 1500 | False | - | - |
+| Ethernet2 | P2P_dc1-leaf2_Ethernet9 | - | 10.1.2.4/31 | default | 1500 | False | - | - |
+| Ethernet3 | P2P_dc1-leaf3_Ethernet9 | - | 10.1.2.8/31 | default | 1500 | False | - | - |
+| Ethernet4 | P2P_dc1-leaf4_Ethernet9 | - | 10.1.2.12/31 | default | 1500 | False | - | - |
 
 #### Ethernet Interfaces Device Configuration
 
 ```eos
 !
 interface Ethernet1
-   description P2P_LINK_TO_DC1-LEAF1_Ethernet9
+   description P2P_dc1-leaf1_Ethernet9
    no shutdown
    mtu 1500
    no switchport
    ip address 10.1.2.0/31
-   pim ipv4 sparse-mode
 !
 interface Ethernet2
-   description P2P_LINK_TO_DC1-LEAF2_Ethernet9
+   description P2P_dc1-leaf2_Ethernet9
    no shutdown
    mtu 1500
    no switchport
    ip address 10.1.2.4/31
-   pim ipv4 sparse-mode
 !
 interface Ethernet3
-   description P2P_LINK_TO_DC1-LEAF3_Ethernet9
+   description P2P_dc1-leaf3_Ethernet9
    no shutdown
    mtu 1500
    no switchport
    ip address 10.1.2.8/31
-   pim ipv4 sparse-mode
 !
 interface Ethernet4
-   description P2P_LINK_TO_DC1-LEAF4_Ethernet9
+   description P2P_dc1-leaf4_Ethernet9
    no shutdown
    mtu 1500
    no switchport
    ip address 10.1.2.12/31
-   pim ipv4 sparse-mode
 ```
 
 ### Loopback Interfaces
@@ -320,20 +297,20 @@ interface Ethernet4
 
 | Interface | Description | VRF | IP Address |
 | --------- | ----------- | --- | ---------- |
-| Loopback0 | EVPN_Overlay_Peering | default | 10.1.0.1/32 |
+| Loopback0 | ROUTER_ID | default | 10.1.0.1/32 |
 
 ##### IPv6
 
 | Interface | Description | VRF | IPv6 Address |
 | --------- | ----------- | --- | ------------ |
-| Loopback0 | EVPN_Overlay_Peering | default | - |
+| Loopback0 | ROUTER_ID | default | - |
 
 #### Loopback Interfaces Device Configuration
 
 ```eos
 !
 interface Loopback0
-   description EVPN_Overlay_Peering
+   description ROUTER_ID
    no shutdown
    ip address 10.1.0.1/32
 ```
@@ -356,14 +333,12 @@ service routing protocols model multi-agent
 | VRF | Routing Enabled |
 | --- | --------------- |
 | default | True |
-| mgmt | True |
 
 #### IP Routing Device Configuration
 
 ```eos
 !
 ip routing
-ip routing vrf mgmt
 ```
 
 ### IPv6 Routing
@@ -373,7 +348,7 @@ ip routing vrf mgmt
 | VRF | Routing Enabled |
 | --- | --------------- |
 | default | False |
-| mgmt | false |
+| default | false |
 
 ### Router BGP
 
@@ -418,8 +393,8 @@ ASN Notation: asplain
 !
 router bgp 65100
    router-id 10.1.0.1
-   maximum-paths 2 ecmp 2
    no bgp default ipv4-unicast
+   maximum-paths 2 ecmp 2
    distance bgp 150 200 200
    graceful-restart restart-time 300
    graceful-restart
@@ -445,45 +420,14 @@ router bgp 65100
       neighbor IPv4-UNDERLAY-PEERS activate
 ```
 
-## Multicast
-
-### Router Multicast
-
-#### IP Router Multicast Summary
-
-- Routing for IPv4 multicast is enabled.
-
-#### Router Multicast Device Configuration
-
-```eos
-!
-router multicast
-   ipv4
-      routing
-```
-
-### PIM Sparse Mode
-
-#### PIM Sparse Mode Enabled Interfaces
-
-| Interface Name | VRF Name | IP Version | Border Router | DR Priority | Local Interface |
-| -------------- | -------- | ---------- | ------------- | ----------- | --------------- |
-| Ethernet1 | - | IPv4 | - | - | - |
-| Ethernet2 | - | IPv4 | - | - | - |
-| Ethernet3 | - | IPv4 | - | - | - |
-| Ethernet4 | - | IPv4 | - | - | - |
-
 ## VRF Instances
 
 ### VRF Instances Summary
 
 | VRF Name | IP Routing |
 | -------- | ---------- |
-| mgmt | enabled |
 
 ### VRF Instances Device Configuration
 
 ```eos
-!
-vrf instance mgmt
 ```

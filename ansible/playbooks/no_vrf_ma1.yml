@@ -1,0 +1,10 @@
+  - hosts: all
+    gather_facts: no
+    tasks: 
+    - name: No VRF Ma1
+      eos_command:
+        commands:
+          - enable
+          - configure
+          - interface Management1
+          - no vrf

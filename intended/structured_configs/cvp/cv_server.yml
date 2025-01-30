@@ -62,7 +62,7 @@ cvp_devices:
       - AVD_dc2-spine2
 cvp_containers:
   DC1:
-    parentContainerName: DC
+    parentContainerName: FABRIC
   dc1_leaf_pair1:
     parentContainerName: DC1_LEAFS
   dc1_leaf_pair2:
@@ -72,7 +72,7 @@ cvp_containers:
   DC1_SPINES:
     parentContainerName: DC1
   DC2:
-    parentContainerName: DC
+    parentContainerName: FABRIC
   dc2_leaf_pair1:
     parentContainerName: DC2_LEAFS
   dc2_leaf_pair2:
@@ -81,5 +81,5 @@ cvp_containers:
     parentContainerName: DC2
   DC2_SPINES:
     parentContainerName: DC2
-  DC:
+  FABRIC:
     parentContainerName: Tenant
