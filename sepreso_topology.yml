@@ -1,0 +1,362 @@
+#
+# Global definitions of nodes
+#
+
+veos:
+  password: arista123
+  username: cvpadmin
+  version: 4.31.2F
+
+cvp:
+  password: cvproot
+  username: root
+  version: 2024.1.0
+
+generic:
+  password: ansible
+  username: ansible
+  version: ubuntu-2204-lts
+
+nodes:
+
+#
+# CVP
+#
+  - cvp:
+      ip_addr: 192.168.0.5
+      node_type: cvp
+      auto_configuration: true
+
+#
+# Ansible
+#
+  - ansible:
+      ip_addr: 192.168.0.6
+      node_type: generic
+
+#
+# Router/FW/LB/Server
+#
+  - dc1-net1:
+      ip_addr: 192.168.0.2
+      node_type: veos
+      ports:
+        - Ethernet1-4
+
+  - dc2-net1:
+      ip_addr: 192.168.0.3
+      node_type: veos
+      ports:
+        - Ethernet1-4
+
+  - dc1-server1:
+      ip_addr: 192.168.0.7
+      node_type: veos
+      ports:
+        - Ethernet1-4
+
+  - dc1-server2:
+      ip_addr: 192.168.0.8
+      node_type: veos
+      ports:
+        - Ethernet1-4
+
+  - dc2-server1:
+      ip_addr: 192.168.0.9
+      node_type: veos
+      ports:
+        - Ethernet1-4
+
+  - dc2-server2:
+      ip_addr: 192.168.0.10
+      node_type: veos
+      ports:
+        - Ethernet1-4
+
+#
+# DC1 L3LS with MLAG between leafs (and spines if needed)
+#
+
+  - dc1-spine1:
+      ip_addr: 192.168.0.11
+      node_type: veos
+      ports:
+        - Ethernet1-12
+
+  - dc1-spine2:
+      ip_addr: 192.168.0.12
+      node_type: veos
+      ports:
+        - Ethernet1-12
+
+  - dc1-leaf1:
+      ip_addr: 192.168.0.13
+      node_type: veos
+      ports:
+        - Ethernet1-12
+
+  - dc1-leaf2:
+      ip_addr: 192.168.0.14
+      node_type: veos
+      ports:
+        - Ethernet1-12
+
+  - dc1-leaf3:
+      ip_addr: 192.168.0.15
+      node_type: veos
+      ports:
+        - Ethernet1-12
+
+  - dc1-leaf4:
+      ip_addr: 192.168.0.16
+      node_type: veos
+      ports:
+        - Ethernet1-12
+
+#
+# DC2 L3LS with MLAG between leafs (and spines if needed)
+#
+
+  - dc2-spine1:
+      ip_addr: 192.168.0.21
+      node_type: veos
+      ports:
+        - Ethernet1-12
+
+  - dc2-spine2:
+      ip_addr: 192.168.0.22
+      node_type: veos
+      ports:
+        - Ethernet1-12
+
+  - dc2-leaf1:
+      ip_addr: 192.168.0.23
+      node_type: veos
+      ports:
+        - Ethernet1-12
+
+  - dc2-leaf2:
+      ip_addr: 192.168.0.24
+      node_type: veos
+      ports:
+        - Ethernet1-12
+
+  - dc2-leaf3:
+      ip_addr: 192.168.0.25
+      node_type: veos
+      ports:
+        - Ethernet1-12
+
+  - dc2-leaf4:
+      ip_addr: 192.168.0.26
+      node_type: veos
+      ports:
+        - Ethernet1-12
+
+#
+# DC1 L3LS with MLAG between leafs (and spines if needed)
+#
+
+links:
+  - connection:
+      - dc1-spine1:Ethernet1
+      - dc1-leaf1:Ethernet9
+
+  - connection:
+      - dc1-spine1:Ethernet2
+      - dc1-leaf2:Ethernet9
+
+  - connection:
+      - dc1-spine1:Ethernet3
+      - dc1-leaf3:Ethernet9
+
+  - connection:
+      - dc1-spine1:Ethernet4
+      - dc1-leaf4:Ethernet9
+
+  - connection:
+      - dc1-spine2:Ethernet1
+      - dc1-leaf1:Ethernet10
+
+  - connection:
+      - dc1-spine2:Ethernet2
+      - dc1-leaf2:Ethernet10
+
+  - connection:
+      - dc1-spine2:Ethernet3
+      - dc1-leaf3:Ethernet10
+
+  - connection:
+      - dc1-spine2:Ethernet4
+      - dc1-leaf4:Ethernet10
+
+  - connection:
+      - dc1-spine1:Ethernet11
+      - dc1-spine2:Ethernet11
+
+  - connection:
+      - dc1-spine1:Ethernet12
+      - dc1-spine2:Ethernet12
+
+  - connection:
+      - dc1-leaf1:Ethernet11
+      - dc1-leaf2:Ethernet11
+
+  - connection:
+      - dc1-leaf1:Ethernet12
+      - dc1-leaf2:Ethernet12
+
+  - connection:
+      - dc1-leaf3:Ethernet11
+      - dc1-leaf4:Ethernet11
+
+  - connection:
+      - dc1-leaf3:Ethernet12
+      - dc1-leaf4:Ethernet12
+
+#
+# DC2 L3LS with MLAG between leafs (and spines if needed)
+#
+
+  - connection:
+      - dc2-spine1:Ethernet1
+      - dc2-leaf1:Ethernet9
+
+  - connection:
+      - dc2-spine1:Ethernet2
+      - dc2-leaf2:Ethernet9
+
+  - connection:
+      - dc2-spine1:Ethernet3
+      - dc2-leaf3:Ethernet9
+
+  - connection:
+      - dc2-spine1:Ethernet4
+      - dc2-leaf4:Ethernet9
+
+  - connection:
+      - dc2-spine2:Ethernet1
+      - dc2-leaf1:Ethernet10
+
+  - connection:
+      - dc2-spine2:Ethernet2
+      - dc2-leaf2:Ethernet10
+
+  - connection:
+      - dc2-spine2:Ethernet3
+      - dc2-leaf3:Ethernet10
+
+  - connection:
+      - dc2-spine2:Ethernet4
+      - dc2-leaf4:Ethernet10
+
+  - connection:
+      - dc2-spine1:Ethernet11
+      - dc2-spine2:Ethernet11
+
+  - connection:
+      - dc2-spine1:Ethernet12
+      - dc2-spine2:Ethernet12
+
+  - connection:
+      - dc2-leaf1:Ethernet11
+      - dc2-leaf2:Ethernet11
+
+  - connection:
+      - dc2-leaf1:Ethernet12
+      - dc2-leaf2:Ethernet12
+
+  - connection:
+      - dc2-leaf3:Ethernet11
+      - dc2-leaf4:Ethernet11
+
+  - connection:
+      - dc2-leaf3:Ethernet12
+      - dc2-leaf4:Ethernet12
+
+#
+# DCI DC1 DC2
+#
+  - connection:
+      - dc1-leaf1:Ethernet7
+      - dc2-leaf1:Ethernet7
+
+  - connection:
+      - dc1-leaf1:Ethernet8
+      - dc2-leaf2:Ethernet8
+
+  - connection:
+      - dc1-leaf2:Ethernet7
+      - dc2-leaf2:Ethernet7
+
+  - connection:
+      - dc1-leaf2:Ethernet8
+      - dc2-leaf1:Ethernet8
+
+#
+# Router/FW/LB/Server
+#
+
+  - connection:
+      - dc1-net1:Ethernet1
+      - dc1-leaf1:Ethernet1
+
+  - connection:
+      - dc1-net1:Ethernet2
+      - dc1-leaf2:Ethernet1
+
+  - connection:
+      - dc2-net1:Ethernet1
+      - dc2-leaf1:Ethernet1
+
+  - connection:
+      - dc2-net1:Ethernet2
+      - dc2-leaf2:Ethernet1
+
+  - connection:
+      - dc1-leaf1:Ethernet2
+      - dc1-server1:Ethernet1
+
+  - connection:
+      - dc1-leaf2:Ethernet2
+      - dc1-server1:Ethernet2
+
+  - connection:
+      - dc1-leaf3:Ethernet1
+      - dc1-server2:Ethernet1
+
+  - connection:
+      - dc1-leaf4:Ethernet1
+      - dc1-server2:Ethernet2
+
+  - connection:
+      - dc2-leaf1:Ethernet2
+      - dc2-server1:Ethernet1
+
+  - connection:
+      - dc2-leaf2:Ethernet2
+      - dc2-server1:Ethernet2
+
+  - connection:
+      - dc2-leaf3:Ethernet1
+      - dc2-server2:Ethernet1
+
+  - connection:
+      - dc2-leaf4:Ethernet1
+      - dc2-server2:Ethernet2
+
+  - connection:
+      - dc1-server1:Ethernet3
+      - dc1-server2:Ethernet3
+
+  - connection:
+      - dc1-server1:Ethernet4
+      - dc1-server2:Ethernet4
+
+  - connection:
+      - dc2-server1:Ethernet3
+      - dc2-server2:Ethernet3
+
+  - connection:
+      - dc2-server1:Ethernet4
+      - dc2-server2:Ethernet4

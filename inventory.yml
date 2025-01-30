@@ -15,7 +15,7 @@ LABB:
           # Configuration to get Virtual Env information
           ansible_python_interpreter: $(which python3)
     
-    DC:
+    FABRIC:
       children:
         DC1:
           children:
