@@ -1,10 +1,10 @@
-fabric_name: DC
+fabric_name: FABRIC
 
 local_users:
-  - name: "cvpadmin"
-    privilege: 15
-    role: "network-admin"
-    sha512_password: "$6$0u6SKAf4I4MFLihf$qoFU0/gkY.50pXWEbZCRTg9AspzpOndSDCvKx04Z05rqKJfCVJOBtDBTpXEIM2XTLLsG2T/6E4sBtatBXjbSY/"
+  # - name: "cvpadmin"
+  #   privilege: 15
+  #   role: "network-admin"
+  #   sha512_password: "$6$0u6SKAf4I4MFLihf$qoFU0/gkY.50pXWEbZCRTg9AspzpOndSDCvKx04Z05rqKJfCVJOBtDBTpXEIM2XTLLsG2T/6E4sBtatBXjbSY/"
 
   - name: "df"
     privilege: 15
@@ -47,15 +47,15 @@ sflow:
 #
 # TerminAttr config
 #
-daemon_terminattr:
-  cvaddrs:
-    - 192.168.0.5:9910
-  cvauth:
-    method: "token"
-    token_file: "/mnt/flash/token"
-  cvvrf: "mgmt"
-  smashexcludes: "ale,flexCounter,hardware,kni,pulse,strata"
-  ingestexclude: "/Sysdb/cell/1/agent,/Sysdb/cell/2/agent"
+# daemon_terminattr:
+#   cvaddrs:
+#     - 192.168.0.5:9910
+#   cvauth:
+#     method: "token"
+#     token_file: "/mnt/flash/token"
+#   cvvrf: "mgmt"
+#   smashexcludes: "ale,flexCounter,hardware,kni,pulse,strata"
+#   ingestexclude: "/Sysdb/cell/1/agent,/Sysdb/cell/2/agent"
 
 # # OOB Management network default gateway.
 # mgmt_gateway: "10.205.15.1"
@@ -63,8 +63,8 @@ daemon_terminattr:
 #
 # MGMT VRF settings
 #
-mgmt_vrf_routing: true
-mgmt_interface_vrf: "mgmt"
+# mgmt_vrf_routing: true
+# mgmt_interface_vrf: "mgmt"
 
 # #
 # # Name server
@@ -84,7 +84,7 @@ ntp:
     local_interface: Management1
     preferred: true
     version: 4
-    vrf: mgmt
+    vrf: default
 
 # Stuff for validate_state
 ansible_user: cvpadmin
@@ -142,7 +142,7 @@ evpn_prevent_readvertise_to_server: true
 #
 # EVPN multicast
 #
-underlay_multicast: True
+underlay_multicast: false
 # evpn_multicast: True
 
 #

@@ -24,9 +24,9 @@ LABB:
                 type: spine
               hosts:
                 dc1-spine1:
-                  ansible_host: 10.205.15.11
+                  ansible_host: 192.168.0.11
                 dc1-spine2:
-                  ansible_host: 10.205.15.12
+                  ansible_host: 192.168.0.12
             DC1_LEAFS:
               children:
                 dc1_leaf_pair1:
@@ -34,17 +34,17 @@ LABB:
                     type: l3leaf
                   hosts:
                     dc1-leaf1:
-                      ansible_host: 10.205.15.13
+                      ansible_host: 192.168.0.13
                     dc1-leaf2:
-                      ansible_host: 10.205.15.14                
+                      ansible_host: 192.168.0.14                
                 dc1_leaf_pair2:
                   vars:
                     type: l3leaf
                   hosts:
                     dc1-leaf3:
-                      ansible_host: 10.205.15.23
+                      ansible_host: 192.168.0.23
                     dc1-leaf4:
-                      ansible_host: 10.205.15.24                
+                      ansible_host: 192.168.0.24                
                 
         DC2:
           children:
@@ -53,9 +53,9 @@ LABB:
                 type: spine
               hosts:
                 dc2-spine1:
-                  ansible_host: 10.205.15.21
+                  ansible_host: 192.168.0.21
                 dc2-spine2:
-                  ansible_host: 10.205.15.22
+                  ansible_host: 192.168.0.22
             DC2_LEAFS:
               children:
                 dc2_leaf_pair1:
@@ -63,17 +63,17 @@ LABB:
                     type: l3leaf
                   hosts:
                     dc2-leaf1:
-                      ansible_host: 10.205.15.23
+                      ansible_host: 192.168.0.23
                     dc2-leaf2:
-                      ansible_host: 10.205.15.24
+                      ansible_host: 192.168.0.24
                 dc2_leaf_pair2:
                   vars:
                     type: l3leaf
                   hosts:
                     dc2-leaf3:
-                      ansible_host: 10.205.15.25
+                      ansible_host: 192.168.0.25
                     dc2-leaf4:
-                      ansible_host: 10.205.15.26
+                      ansible_host: 192.168.0.26
     
     TENANTS:
       children:
