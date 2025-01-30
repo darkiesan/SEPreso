@@ -1,0 +1,25 @@
+---
+  - hosts: all
+    gather_facts: no
+    tasks: 
+    - name: Create onboarding token for CVAAS
+      eos_command:
+        commands:
+          - enable
+          - configure
+          - bash
+          - echo "" > /mnt/flash/cv-onboarding-token
+          - exit
+          - exit
+
+  - hosts: all
+    gather_facts: no
+    tasks: 
+  - name: Provision TerminAttr for CVAAS
+    template:
+     src: "{{lookup('env','PWD')}}/templates/terminattr_cvaas.j2"
+     dest: "{{lookup('env','PWD')}}/configs/{{inventory_hostname}}_terminattr_cvaas.cfg"
+
+  - name: Upload config
+    eos_config:
+      src: "{{lookup('env','PWD')}}/configs/{{inventory_hostname}}_terminattr_cvaas.cfg"
