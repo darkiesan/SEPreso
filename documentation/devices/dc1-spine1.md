@@ -11,6 +11,7 @@
   - [Local Users](#local-users)
   - [Enable Password](#enable-password)
 - [Monitoring](#monitoring)
+  - [TerminAttr Daemon](#terminattr-daemon)
   - [SFlow](#sflow)
 - [Spanning Tree](#spanning-tree)
   - [Spanning Tree Summary](#spanning-tree-summary)
@@ -127,12 +128,14 @@ management api http-commands
 
 | User | Privilege | Role | Disabled | Shell |
 | ---- | --------- | ---- | -------- | ----- |
+| cvpadmin | 15 | network-admin | False | - |
 | df | 15 | network-admin | False | - |
 
 #### Local Users Device Configuration
 
 ```eos
 !
+username cvpadmin privilege 15 role network-admin secret sha512 <removed>
 username df privilege 15 role network-admin secret sha512 <removed>
 ```
 
@@ -141,6 +144,23 @@ username df privilege 15 role network-admin secret sha512 <removed>
 Enable password has been disabled
 
 ## Monitoring
+
+### TerminAttr Daemon
+
+#### TerminAttr Daemon Summary
+
+| CV Compression | CloudVision Servers | VRF | Authentication | Smash Excludes | Ingest Exclude | Bypass AAA |
+| -------------- | ------------------- | --- | -------------- | -------------- | -------------- | ---------- |
+| gzip | 192.168.0.5:9910 | default | token,/tmp/token | ale,flexCounter,hardware,kni,pulse,strata | /Sysdb/cell/1/agent,/Sysdb/cell/2/agent | False |
+
+#### TerminAttr Daemon Device Configuration
+
+```eos
+!
+daemon TerminAttr
+   exec /usr/bin/TerminAttr -cvaddr=192.168.0.5:9910 -cvauth=token,/tmp/token -cvvrf=default -smashexcludes=ale,flexCounter,hardware,kni,pulse,strata -ingestexclude=/Sysdb/cell/1/agent,/Sysdb/cell/2/agent -taillogs
+   no shutdown
+```
 
 ### SFlow
 

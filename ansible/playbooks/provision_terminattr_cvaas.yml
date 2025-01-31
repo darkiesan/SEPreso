@@ -1,5 +1,5 @@
 ---
-  - hosts: other
+  - hosts: all
     gather_facts: no
     tasks: 
 
@@ -21,3 +21,13 @@
     - name: Upload config
       eos_config:
         src: "{{lookup('env','PWD')}}/configs/{{inventory_hostname}}_terminattr_cvaas.cfg"
+
+    - name: Restart terminattr
+      eos_command:
+        commands:
+          - enable
+          - configure
+          - daemon TerminAttr
+          - shutdown
+          - no shutdown
+          - exit

@@ -25,10 +25,10 @@ daemon_terminattr:
 #   ingestexclude: "/Sysdb/cell/1/agent,/Sysdb/cell/2/agent"
 
 local_users:
-  # - name: "cvpadmin"
-  #   privilege: 15
-  #   role: "network-admin"
-  #   sha512_password: "$6$0u6SKAf4I4MFLihf$qoFU0/gkY.50pXWEbZCRTg9AspzpOndSDCvKx04Z05rqKJfCVJOBtDBTpXEIM2XTLLsG2T/6E4sBtatBXjbSY/"
+  - name: "cvpadmin"
+    privilege: 15
+    role: "network-admin"
+    sha512_password: "$6$VJVmuFMn/3I9uHiJ$imGhGAEeFlR7pPJ7l3IGP4BzZl9.sXF0ESGjmyiSsgmRPIu9JUIb1nV0Z.xrC2RqYelCaEZzckbNq6Edt2k5O."
 
   - name: "df"
     privilege: 15

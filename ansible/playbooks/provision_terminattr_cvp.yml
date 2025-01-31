@@ -3,15 +3,15 @@
     gather_facts: no
     tasks: 
 
-    - name: Create onboarding token for CVP
-      eos_command:
-        commands:
-          - enable
-          - configure
-          - bash
-          - echo "" > /mnt/flash/cv-onboarding-token
-          - exit
-          - exit
+    # - name: Create onboarding token for CVP
+    #   eos_command:
+    #     commands:
+    #       - enable
+    #       - configure
+    #       - bash
+    #       - echo "" > /mnt/flash/cv-onboarding-token
+    #       - exit
+    #       - exit
 
     - name: Provision TerminAttr for CVP
       template:
@@ -21,3 +21,13 @@
     - name: Upload config
       eos_config:
         src: "{{lookup('env','PWD')}}/configs/{{inventory_hostname}}_terminattr_cvp.cfg"
+
+    - name: Restart terminattr
+      eos_command:
+        commands:
+          - enable
+          - configure
+          - daemon TerminAttr
+          - shutdown
+          - no shutdown
+          - exit

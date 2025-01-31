@@ -64,6 +64,10 @@ transceiver_qsfp_default_mode_4x10: true
 spanning_tree:
   mode: none
 local_users:
+- name: cvpadmin
+  privilege: 15
+  role: network-admin
+  sha512_password: $6$VJVmuFMn/3I9uHiJ$imGhGAEeFlR7pPJ7l3IGP4BzZl9.sXF0ESGjmyiSsgmRPIu9JUIb1nV0Z.xrC2RqYelCaEZzckbNq6Edt2k5O.
 - name: df
   privilege: 15
   role: network-admin
