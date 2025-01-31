@@ -3,6 +3,17 @@ fabric_name: FABRIC
 #
 # TerminAttr config
 #
+
+daemon_terminattr:
+  cvaddrs:
+    - 192.168.0.5:9910
+  cvauth:
+    method: "token"
+    token_file: "/tmp/token"
+  cvvrf: "default"
+  smashexcludes: "ale,flexCounter,hardware,kni,pulse,strata"
+  ingestexclude: "/Sysdb/cell/1/agent,/Sysdb/cell/2/agent"
+
 # daemon_terminattr:
 #   cvaddrs:
 #     - apiserver.cv-staging.corp.arista.io:443
@@ -12,7 +23,6 @@ fabric_name: FABRIC
 #   cvvrf: default
 #   smashexcludes: "ale,flexCounter,hardware,kni,pulse,strata"
 #   ingestexclude: "/Sysdb/cell/1/agent,/Sysdb/cell/2/agent"
-#   cvcompression: gzip
 
 local_users:
   # - name: "cvpadmin"
@@ -57,19 +67,6 @@ sflow:
     - destination: "127.0.0.1"
   source_interface: "Loopback0"
   run: true
-
-#
-# TerminAttr config
-#
-# daemon_terminattr:
-#   cvaddrs:
-#     - 192.168.0.5:9910
-#   cvauth:
-#     method: "token"
-#     token_file: "/mnt/flash/token"
-#   cvvrf: "mgmt"
-#   smashexcludes: "ale,flexCounter,hardware,kni,pulse,strata"
-#   ingestexclude: "/Sysdb/cell/1/agent,/Sysdb/cell/2/agent"
 
 # # OOB Management network default gateway.
 # mgmt_gateway: "10.205.15.1"

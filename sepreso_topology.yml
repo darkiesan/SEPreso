@@ -38,36 +38,42 @@ nodes:
 # Router/FW/LB/Server
 #
   - dc1-net1:
+      internet_access: true
       ip_addr: 192.168.0.2
       node_type: veos
       ports:
         - Ethernet1-4
 
   - dc2-net1:
+      internet_access: true
       ip_addr: 192.168.0.3
       node_type: veos
       ports:
         - Ethernet1-4
 
   - dc1-server1:
+      internet_access: true
       ip_addr: 192.168.0.7
       node_type: veos
       ports:
         - Ethernet1-4
 
   - dc1-server2:
+      internet_access: true
       ip_addr: 192.168.0.8
       node_type: veos
       ports:
         - Ethernet1-4
 
   - dc2-server1:
+      internet_access: true
       ip_addr: 192.168.0.9
       node_type: veos
       ports:
         - Ethernet1-4
 
   - dc2-server2:
+      internet_access: true
       ip_addr: 192.168.0.10
       node_type: veos
       ports:
@@ -78,36 +84,42 @@ nodes:
 #
 
   - dc1-spine1:
+      internet_access: true
       ip_addr: 192.168.0.11
       node_type: veos
       ports:
         - Ethernet1-12
 
   - dc1-spine2:
+      internet_access: true
       ip_addr: 192.168.0.12
       node_type: veos
       ports:
         - Ethernet1-12
 
   - dc1-leaf1:
+      internet_access: true
       ip_addr: 192.168.0.13
       node_type: veos
       ports:
         - Ethernet1-12
 
   - dc1-leaf2:
+      internet_access: true
       ip_addr: 192.168.0.14
       node_type: veos
       ports:
         - Ethernet1-12
 
   - dc1-leaf3:
+      internet_access: true
       ip_addr: 192.168.0.15
       node_type: veos
       ports:
         - Ethernet1-12
 
   - dc1-leaf4:
+      internet_access: true
       ip_addr: 192.168.0.16
       node_type: veos
       ports:
@@ -118,36 +130,42 @@ nodes:
 #
 
   - dc2-spine1:
+      internet_access: true
       ip_addr: 192.168.0.21
       node_type: veos
       ports:
         - Ethernet1-12
 
   - dc2-spine2:
+      internet_access: true
       ip_addr: 192.168.0.22
       node_type: veos
       ports:
         - Ethernet1-12
 
   - dc2-leaf1:
+      internet_access: true
       ip_addr: 192.168.0.23
       node_type: veos
       ports:
         - Ethernet1-12
 
   - dc2-leaf2:
+      internet_access: true
       ip_addr: 192.168.0.24
       node_type: veos
       ports:
         - Ethernet1-12
 
   - dc2-leaf3:
+      internet_access: true
       ip_addr: 192.168.0.25
       node_type: veos
       ports:
         - Ethernet1-12
 
   - dc2-leaf4:
+      internet_access: true
       ip_addr: 192.168.0.26
       node_type: veos
       ports:
