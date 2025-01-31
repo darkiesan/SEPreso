@@ -1,5 +1,5 @@
 ---
-  - hosts: all
+  - hosts: other
     gather_facts: no
     tasks: 
     - name: Restart terminattr

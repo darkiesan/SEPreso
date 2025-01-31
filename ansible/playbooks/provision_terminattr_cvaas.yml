@@ -1,25 +1,23 @@
 ---
-  - hosts: all
+  - hosts: other
     gather_facts: no
     tasks: 
+
     - name: Create onboarding token for CVAAS
       eos_command:
         commands:
           - enable
           - configure
           - bash
-          - echo "" > /mnt/flash/cv-onboarding-token
+          - echo "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhc2V0SUQiOjkwODE1LCJleHAiOjE3Mzg0MDY3NDAsImtpZCI6IjQ0NzgwYzRjMjA0MTM3MmUiLCJuYmYiOjE3MzgzMjAzNDAsInJlZW5yb2xsRGV2aWNlcyI6WyIqIl19.Q61VsgBCZ-iBLSNUCAG2Ez-znaN-z-XC1US6kQfHMW7HYZ7im_6s16q6Ce0X6aRPnHVoOalg0_K0NYsUi5nJHKwLaAIoV5PWYxBihmRUJmJt8T0lPrKMcqc6x3Ef3_29IJ050gwtejd_5i_ruTK7ali20NRXqphhN-uLabx8bP-nVyO-yKzb-zmOL7XNJswG8NYxv2bv8HHOWrvVZFIAUb7X4yelIV2fDShTm5w7F2ICg0gBO_M1H2_f1_ecI1_j7ttvYEPn5FwBZ-w372RjAbXj4J5taLlsSiACYKE2UFoTXYzoyyIGmJLd2Ge4ciwg4B6FJ55dwWxdt4sr-FoPFA" > /mnt/flash/cv-onboarding-token
           - exit
           - exit
 
-  - hosts: all
-    gather_facts: no
-    tasks: 
-  - name: Provision TerminAttr for CVAAS
-    template:
-     src: "{{lookup('env','PWD')}}/templates/terminattr_cvaas.j2"
-     dest: "{{lookup('env','PWD')}}/configs/{{inventory_hostname}}_terminattr_cvaas.cfg"
+    - name: Provision TerminAttr for CVAAS
+      template:
+       src: "{{lookup('env','PWD')}}/templates/terminattr_cvaas.j2"
+       dest: "{{lookup('env','PWD')}}/configs/{{inventory_hostname}}_terminattr_cvaas.cfg"
 
-  - name: Upload config
-    eos_config:
-      src: "{{lookup('env','PWD')}}/configs/{{inventory_hostname}}_terminattr_cvaas.cfg"
+    - name: Upload config
+      eos_config:
+        src: "{{lookup('env','PWD')}}/configs/{{inventory_hostname}}_terminattr_cvaas.cfg"
