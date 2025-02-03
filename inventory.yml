@@ -6,7 +6,7 @@ LABB:
           # ansible_httpapi_host: www.cv-staging.corp.arista.io
           # ansible_host: www.cv-staging.corp.arista.io
           # ansible_user: cvaas
-          # ansible_password: eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCJ9.eyJkaWQiOjMyMTIxMCwiZHNuIjoiY3ZhYXMiLCJkc3QiOiJhY2NvdW50IiwiZXhwIjoxOTU5MjYxMDQ3LCJpYXQiOjE2NzU0MzcwNTAsIm9naSI6OTA4MTUsIm9nbiI6ImFyaXN0YS1zZS1ub3JkaWMiLCJzaWQiOiIyODE5ODNiNzE2YzAzNzUwMmU5NWNkNzY1YjI4ZDIxNzNlODc5MmIyZGNlMjIyYjg0ZDAyOTVmOTEyNjk0NTkyLVVSODFnLWJOTG0tbmsxWjgzRXNEUXQyRVJYRVBsWXJubF90RlNlQmgifQ.x8hN4cXHnqVSXAnbhDm7tEvHlwVv2FZXAPJgwHhAHxE-7gDBg7OXud6gdE_BwoLVNdFYpj5DD4EcwZ82IggcHw
+          # ansible_password: <insert your token for svc accoutn here>
           ansible_httpapi_host: 192.168.0.5
           ansible_host: 192.168.0.5
           ansible_user: cvpadmin

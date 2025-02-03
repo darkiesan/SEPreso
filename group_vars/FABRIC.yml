@@ -30,11 +30,6 @@ local_users:
     role: "network-admin"
     sha512_password: "$6$VJVmuFMn/3I9uHiJ$imGhGAEeFlR7pPJ7l3IGP4BzZl9.sXF0ESGjmyiSsgmRPIu9JUIb1nV0Z.xrC2RqYelCaEZzckbNq6Edt2k5O."
 
-  - name: "df"
-    privilege: 15
-    role: "network-admin"
-    sha512_password: "$6$W2.UOKH77rTBZ.I6$Hk44.wydPL9f0U2p7GNJPKcljfGSR81fopt6k3WvM1g3h9Fhr7XxwdIte1KC1ui3g9aKEmLYrhcyGom9kaVxy1"
-
 # Terminal settings
 terminal:
   length: 0
