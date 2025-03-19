@@ -98,9 +98,9 @@ ntp server se.pool.ntp.org prefer version 4 local-interface Management1
 
 #### Management API HTTP Summary
 
-| HTTP | HTTPS | Default Services |
-| ---- | ----- | ---------------- |
-| False | True | - |
+| HTTP | HTTPS | UNIX-Socket | Default Services |
+| ---- | ----- | ----------- | ---------------- |
+| False | True | - | - |
 
 #### Management API VRF Access
 
@@ -129,14 +129,12 @@ management api http-commands
 | User | Privilege | Role | Disabled | Shell |
 | ---- | --------- | ---- | -------- | ----- |
 | cvpadmin | 15 | network-admin | False | - |
-| df | 15 | network-admin | False | - |
 
 #### Local Users Device Configuration
 
 ```eos
 !
 username cvpadmin privilege 15 role network-admin secret sha512 <removed>
-username df privilege 15 role network-admin secret sha512 <removed>
 ```
 
 ### Enable Password

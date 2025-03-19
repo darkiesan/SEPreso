@@ -56,3 +56,15 @@ servers:
       - dc1-leaf4 
       spanning_tree_portfast: edge
       vlans: '10'
+
+  - name: "SERVER2-1"
+    adapters:
+    - mode: trunk
+      endpoint_ports:
+      - Eth0
+      switch_ports:
+      - Ethernet5
+      switches:
+      - dc1-leaf3
+      spanning_tree_portfast: edge
+      vlans: '10-12,100-103'

@@ -1,9 +1,84 @@
+aaa_root:
+  disabled: true
+config_end: true
+enable_password:
+  disabled: true
+ethernet_interfaces:
+- name: Ethernet1
+  description: P2P_dc1-leaf1_Ethernet10
+  shutdown: false
+  mtu: 1500
+  ip_address: 10.1.2.2/31
+  peer: dc1-leaf1
+  peer_interface: Ethernet10
+  peer_type: l3leaf
+  switchport:
+    enabled: false
+- name: Ethernet2
+  description: P2P_dc1-leaf2_Ethernet10
+  shutdown: false
+  mtu: 1500
+  ip_address: 10.1.2.6/31
+  peer: dc1-leaf2
+  peer_interface: Ethernet10
+  peer_type: l3leaf
+  switchport:
+    enabled: false
+- name: Ethernet3
+  description: P2P_dc1-leaf3_Ethernet10
+  shutdown: false
+  mtu: 1500
+  ip_address: 10.1.2.10/31
+  peer: dc1-leaf3
+  peer_interface: Ethernet10
+  peer_type: l3leaf
+  switchport:
+    enabled: false
+- name: Ethernet4
+  description: P2P_dc1-leaf4_Ethernet10
+  shutdown: false
+  mtu: 1500
+  ip_address: 10.1.2.14/31
+  peer: dc1-leaf4
+  peer_interface: Ethernet10
+  peer_type: l3leaf
+  switchport:
+    enabled: false
 hostname: dc1-spine2
+ip_routing: true
 is_deployed: true
-serial_number: SN-dc1-spine2
+local_users:
+- name: cvpadmin
+  privilege: 15
+  role: network-admin
+  sha512_password: $6$VJVmuFMn/3I9uHiJ$imGhGAEeFlR7pPJ7l3IGP4BzZl9.sXF0ESGjmyiSsgmRPIu9JUIb1nV0Z.xrC2RqYelCaEZzckbNq6Edt2k5O.
+loopback_interfaces:
+- name: Loopback0
+  description: ROUTER_ID
+  shutdown: false
+  ip_address: 10.1.0.2/32
+mac_address_table:
+  aging_time: 901
+management_api_http:
+  enable_https: true
+  enable_vrfs:
+  - name: default
+management_interfaces:
+- name: Management1
+  description: OOB_MANAGEMENT
+  shutdown: false
+  vrf: default
+  ip_address: 192.168.0.12/24
+  type: oob
+metadata:
+  dc_name: DC1
+  fabric_name: FABRIC
 router_bgp:
   as: '65100'
   router_id: 10.1.0.2
+  maximum_paths:
+    paths: 2
+    ecmp: 2
   bgp_defaults:
   - distance bgp 150 200 200
   - graceful-restart restart-time 300
@@ -11,22 +86,12 @@ router_bgp:
   bgp:
     default:
       ipv4_unicast: false
-  maximum_paths:
-    paths: 2
-    ecmp: 2
-  redistribute:
-    connected:
-      enabled: true
   peer_groups:
   - name: IPv4-UNDERLAY-PEERS
     type: ipv4
     password: $1c$U4tL2vQP9QwZlxIV1K3/pw==
-    maximum_routes: 12000
     send_community: all
-  address_family_ipv4:
-    peer_groups:
-    - name: IPv4-UNDERLAY-PEERS
-      activate: true
+    maximum_routes: 12000
   neighbors:
   - ip_address: 10.1.2.3
     peer_group: IPv4-UNDERLAY-PEERS
@@ -48,90 +113,23 @@ router_bgp:
     remote_as: '65102'
     peer: dc1-leaf4
     description: dc1-leaf4_Ethernet10
+  redistribute:
+    connected:
+      enabled: true
+  address_family_ipv4:
+    peer_groups:
+    - name: IPv4-UNDERLAY-PEERS
+      activate: true
 service_routing_protocols_model: multi-agent
-ip_routing: true
+spanning_tree:
+  mode: none
+transceiver_qsfp_default_mode_4x10: true
 vlan_internal_order:
   allocation: ascending
   range:
     beginning: 3700
     ending: 3900
-aaa_root:
-  disabled: true
-config_end: true
-enable_password:
-  disabled: true
-transceiver_qsfp_default_mode_4x10: true
-spanning_tree:
-  mode: none
-local_users:
-- name: cvpadmin
-  privilege: 15
-  role: network-admin
-  sha512_password: $6$VJVmuFMn/3I9uHiJ$imGhGAEeFlR7pPJ7l3IGP4BzZl9.sXF0ESGjmyiSsgmRPIu9JUIb1nV0Z.xrC2RqYelCaEZzckbNq6Edt2k5O.
-- name: df
-  privilege: 15
-  role: network-admin
-  sha512_password: $6$W2.UOKH77rTBZ.I6$Hk44.wydPL9f0U2p7GNJPKcljfGSR81fopt6k3WvM1g3h9Fhr7XxwdIte1KC1ui3g9aKEmLYrhcyGom9kaVxy1
 vrfs:
 - name: default
   ip_routing: true
-management_interfaces:
-- name: Management1
-  description: OOB_MANAGEMENT
-  shutdown: false
-  vrf: default
-  ip_address: 192.168.0.12/24
-  gateway: null
-  type: oob
-mac_address_table:
-  aging_time: 901
-management_api_http:
-  enable_vrfs:
-  - name: default
-  enable_https: true
-ethernet_interfaces:
-- name: Ethernet1
-  peer: dc1-leaf1
-  peer_interface: Ethernet10
-  peer_type: l3leaf
-  description: P2P_dc1-leaf1_Ethernet10
-  shutdown: false
-  mtu: 1500
-  switchport:
-    enabled: false
-  ip_address: 10.1.2.2/31
-- name: Ethernet2
-  peer: dc1-leaf2
-  peer_interface: Ethernet10
-  peer_type: l3leaf
-  description: P2P_dc1-leaf2_Ethernet10
-  shutdown: false
-  mtu: 1500
-  switchport:
-    enabled: false
-  ip_address: 10.1.2.6/31
-- name: Ethernet3
-  peer: dc1-leaf3
-  peer_interface: Ethernet10
-  peer_type: l3leaf
-  description: P2P_dc1-leaf3_Ethernet10
-  shutdown: false
-  mtu: 1500
-  switchport:
-    enabled: false
-  ip_address: 10.1.2.10/31
-- name: Ethernet4
-  peer: dc1-leaf4
-  peer_interface: Ethernet10
-  peer_type: l3leaf
-  description: P2P_dc1-leaf4_Ethernet10
-  shutdown: false
-  mtu: 1500
-  switchport:
-    enabled: false
-  ip_address: 10.1.2.14/31
-loopback_interfaces:
-- name: Loopback0
-  description: ROUTER_ID
-  shutdown: false
-  ip_address: 10.1.0.2/32
+serial_number: SN-dc1-spine2

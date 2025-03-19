@@ -118,9 +118,9 @@ ntp server se.pool.ntp.org prefer version 4 local-interface Management1
 
 #### Management API HTTP Summary
 
-| HTTP | HTTPS | Default Services |
-| ---- | ----- | ---------------- |
-| False | True | - |
+| HTTP | HTTPS | UNIX-Socket | Default Services |
+| ---- | ----- | ----------- | ---------------- |
+| False | True | - | - |
 
 #### Management API VRF Access
 
@@ -149,14 +149,12 @@ management api http-commands
 | User | Privilege | Role | Disabled | Shell |
 | ---- | --------- | ---- | -------- | ----- |
 | cvpadmin | 15 | network-admin | False | - |
-| df | 15 | network-admin | False | - |
 
 #### Local Users Device Configuration
 
 ```eos
 !
 username cvpadmin privilege 15 role network-admin secret sha512 <removed>
-username df privilege 15 role network-admin secret sha512 <removed>
 ```
 
 ### Enable Password
@@ -275,6 +273,7 @@ vlan internal order ascending range 3700 3900
 | VLAN ID | Name | Trunk Groups |
 | ------- | ---- | ------------ |
 | 2 | TEST_VLAN2 | - |
+| 3 | TEST_VLAN3 | - |
 | 10 | TEST_VLAN10 | - |
 | 100 | TEST_VLAN100 | - |
 | 3000 | MLAG_L3_VRF_FW_TEST1 | MLAG |
@@ -287,6 +286,9 @@ vlan internal order ascending range 3700 3900
 !
 vlan 2
    name TEST_VLAN2
+!
+vlan 3
+   name TEST_VLAN3
 !
 vlan 10
    name TEST_VLAN10
@@ -586,6 +588,7 @@ interface Vlan4094
 | VLAN | VNI | Flood List | Multicast Group |
 | ---- | --- | ---------- | --------------- |
 | 2 | 10002 | - | - |
+| 3 | 10003 | - | - |
 | 10 | 10010 | - | - |
 | 100 | 10100 | - | - |
 
@@ -605,6 +608,7 @@ interface Vxlan1
    vxlan virtual-router encapsulation mac-address mlag-system-id
    vxlan udp-port 4789
    vxlan vlan 2 vni 10002
+   vxlan vlan 3 vni 10003
    vxlan vlan 10 vni 10010
    vxlan vlan 100 vni 10100
    vxlan vrf FW_TEST1 vni 1
@@ -737,15 +741,16 @@ ASN Notation: asplain
 
 ##### EVPN Peer Groups
 
-| Peer Group | Activate | Route-map In | Route-map Out | Encapsulation |
-| ---------- | -------- | ------------ | ------------- | ------------- |
-| EVPN-OVERLAY-PEERS | True |  - | - | default |
+| Peer Group | Activate | Route-map In | Route-map Out | Encapsulation | Next-hop-self Source Interface |
+| ---------- | -------- | ------------ | ------------- | ------------- | ------------------------------ |
+| EVPN-OVERLAY-PEERS | True |  - | - | default | - |
 
 #### Router BGP VLANs
 
 | VLAN | Route-Distinguisher | Both Route-Target | Import Route Target | Export Route-Target | Redistribute |
 | ---- | ------------------- | ----------------- | ------------------- | ------------------- | ------------ |
 | 2 | 10.2.0.3:10002 | 65000:10002 | - | - | learned |
+| 3 | 10.2.0.3:10003 | 65000:10003 | - | - | learned |
 | 10 | 10.2.0.3:10010 | 65000:10010 | - | - | learned |
 | 100 | 10.2.0.3:10100 | 65000:10100 | - | - | learned |
 
@@ -824,6 +829,11 @@ router bgp 65201
    vlan 2
       rd 10.2.0.3:10002
       route-target both 65000:10002
+      redistribute learned
+   !
+   vlan 3
+      rd 10.2.0.3:10003
+      route-target both 65000:10003
       redistribute learned
    !
    vlan 10
