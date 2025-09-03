@@ -37,4 +37,5 @@
         # search_key: hostname
         state: present
         cv_collection: v3
-        device_search_key: serialNumber
+        device_search_key: hostname
+        # device_search_key: serialNumber
