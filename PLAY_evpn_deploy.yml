@@ -21,34 +21,34 @@
       import_role:
         name: arista.avd.eos_cli_config_gen
 
-# - name: Configuration deployment with CVP legacy
-#   hosts: cv_server
-#   connection: local
-#   gather_facts: false
-#   tasks:
-#     - name: run CVP provisioning
-#       import_role:
-#         name: arista.avd.eos_config_deploy_cvp
-#       vars:
-#         container_root: 'FABRIC'
-#         configlets_prefix: 'AVD'
-#         # execute_tasks: true
-#         # device_filter: ''
-#         # search_key: hostname
-#         state: present
-#         cv_collection: v3
-#         device_search_key: hostname
-#         # device_search_key: serialNumber
-
-- name: Configuration deployment Studios
-  hosts: FABRIC # <-- Targeted devices
+- name: Configuration deployment with CVP legacy
+  hosts: cv_server
   connection: local
   gather_facts: false
   tasks:
-    - name: Deploy configurations and tags to CloudVision
-      ansible.builtin.import_role:
-        name: arista.avd.cv_deploy
+    - name: run CVP provisioning
+      import_role:
+        name: arista.avd.eos_config_deploy_cvp
       vars:
-        cv_server: 192.168.0.5
-        cv_token: eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJkaWQiOjc1NTYyNjE0OTcxNTY5Mjc2OTYsImRzbiI6ImN2YWFzIiwiZHN0IjoiYWNjb3VudCIsImV4cCI6MTgyMjM5MTk1MSwiaWF0IjoxNzU5NzUxOTU1LCJvZ2kiOjMsIm9nbiI6IkRlZmF1bHQiLCJzaWQiOiI3YWRhNjNiNzNhNzFmMzg0ODI4NTUyZGYzZmE2N2MyZDVmN2UxZjNiYWNmMzQ3ZjdjOTc5MzA4OGZmYmUyMzVjLTFhU21Fbzd6WjdkZEdwci1mR1hXbXlJRW9KMVBCcm5hOVVWSVdBYksifQ.tX6WRQDZWnpMvJH-M34O_ft6qfOSX7FFr5TonneoF5oJVkGWwo_vU3K5WozweoLRPYnffiDLkPk3gSB0AyL_9cKUKqZ2NK3Aum2n9YIg7JwP86djWjMlLw-MT84UDnfXGX12HOyFhmZy5jUGNh_OMEeUNlbsRfnrvtJw97cjNv4INLli1Z-RODdY5Q0UZ95CJGOz8_aw-n8aNzperInyykTZIgGFNbvoCmjeaMzOsz-8KuWOwH0r3cp25g21BXiHfInABUZE5XRmGkIGOES209eT8tmiLNyyedsogzALdxF477CZu-wV1nl2hjjFRVPuW1SNFyP66fC1MqxvDFs7_r0SViYTdEvoXGxxFj_gSO8xFYVoKxkpm0w8EFAkkyKfVvg_RWTGkMPflOCCIJvINWc0_RWWZxDiWdc_GshkLoJcTctJe1asmeECM8NsWJdO7cm9_V-s54hv_yf9kCNp9ir5hNr4L2scuSHBNFKoSQqCj0IfDok2Z3C_8gIdfN8pEK85CTx44vt77C5R38b1880sIlfUljb5QOmAgmKiS6XPAKuJwv3PaNe4Yr3gKOeeqqo3ML5w4er8SKO87Is4ixTAjA19hv3bE3Cafoym4zn_w7Dgdl2lIOzettjtLbTCF8E9isHXi_ZgNwqaduYFJh-1qDtR1vehCvKZ3ueJAn0
-        cv_verify_certs: false
+        container_root: 'FABRIC'
+        configlets_prefix: 'AVD'
+        # execute_tasks: true
+        # device_filter: ''
+        # search_key: hostname
+        state: present
+        cv_collection: v3
+        device_search_key: hostname
+        # device_search_key: serialNumber
+
+# - name: Configuration deployment Studios
+#   hosts: FABRIC # <-- Targeted devices
+#   connection: local
+#   gather_facts: false
+#   tasks:
+#     - name: Deploy configurations and tags to CloudVision
+#       ansible.builtin.import_role:
+#         name: arista.avd.cv_deploy
+#       vars:
+#         cv_server: 192.168.0.5
+#         cv_token: eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJkaWQiOjc1NTYyNjE0OTcxNTY5Mjc2OTYsImRzbiI6ImN2YWFzIiwiZHN0IjoiYWNjb3VudCIsImV4cCI6MTgyMjM5MTk1MSwiaWF0IjoxNzU5NzUxOTU1LCJvZ2kiOjMsIm9nbiI6IkRlZmF1bHQiLCJzaWQiOiI3YWRhNjNiNzNhNzFmMzg0ODI4NTUyZGYzZmE2N2MyZDVmN2UxZjNiYWNmMzQ3ZjdjOTc5MzA4OGZmYmUyMzVjLTFhU21Fbzd6WjdkZEdwci1mR1hXbXlJRW9KMVBCcm5hOVVWSVdBYksifQ.tX6WRQDZWnpMvJH-M34O_ft6qfOSX7FFr5TonneoF5oJVkGWwo_vU3K5WozweoLRPYnffiDLkPk3gSB0AyL_9cKUKqZ2NK3Aum2n9YIg7JwP86djWjMlLw-MT84UDnfXGX12HOyFhmZy5jUGNh_OMEeUNlbsRfnrvtJw97cjNv4INLli1Z-RODdY5Q0UZ95CJGOz8_aw-n8aNzperInyykTZIgGFNbvoCmjeaMzOsz-8KuWOwH0r3cp25g21BXiHfInABUZE5XRmGkIGOES209eT8tmiLNyyedsogzALdxF477CZu-wV1nl2hjjFRVPuW1SNFyP66fC1MqxvDFs7_r0SViYTdEvoXGxxFj_gSO8xFYVoKxkpm0w8EFAkkyKfVvg_RWTGkMPflOCCIJvINWc0_RWWZxDiWdc_GshkLoJcTctJe1asmeECM8NsWJdO7cm9_V-s54hv_yf9kCNp9ir5hNr4L2scuSHBNFKoSQqCj0IfDok2Z3C_8gIdfN8pEK85CTx44vt77C5R38b1880sIlfUljb5QOmAgmKiS6XPAKuJwv3PaNe4Yr3gKOeeqqo3ML5w4er8SKO87Is4ixTAjA19hv3bE3Cafoym4zn_w7Dgdl2lIOzettjtLbTCF8E9isHXi_ZgNwqaduYFJh-1qDtR1vehCvKZ3ueJAn0
+#         cv_verify_certs: false
