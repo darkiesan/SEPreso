@@ -48,6 +48,6 @@
     - name: Deploy configurations and tags to CloudVision
       ansible.builtin.import_role:
         name: arista.avd.cv_deploy
-      # vars:
-      #   cv_server: www.arista.io
-      #   cv_token: <insert service_account token here - use Ansible Vault>
+      vars:
+        cv_server: 192.168.0.5
+        cv_token: eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJkaWQiOjc1NTYyNjE0OTcxNTY5Mjc2OTYsImRzbiI6ImN2YWFzIiwiZHN0IjoiYWNjb3VudCIsImV4cCI6MTgyMjM5MTk1MSwiaWF0IjoxNzU5NzUxOTU1LCJvZ2kiOjMsIm9nbiI6IkRlZmF1bHQiLCJzaWQiOiI3YWRhNjNiNzNhNzFmMzg0ODI4NTUyZGYzZmE2N2MyZDVmN2UxZjNiYWNmMzQ3ZjdjOTc5MzA4OGZmYmUyMzVjLTFhU21Fbzd6WjdkZEdwci1mR1hXbXlJRW9KMVBCcm5hOVVWSVdBYksifQ.tX6WRQDZWnpMvJH-M34O_ft6qfOSX7FFr5TonneoF5oJVkGWwo_vU3K5WozweoLRPYnffiDLkPk3gSB0AyL_9cKUKqZ2NK3Aum2n9YIg7JwP86djWjMlLw-MT84UDnfXGX12HOyFhmZy5jUGNh_OMEeUNlbsRfnrvtJw97cjNv4INLli1Z-RODdY5Q0UZ95CJGOz8_aw-n8aNzperInyykTZIgGFNbvoCmjeaMzOsz-8KuWOwH0r3cp25g21BXiHfInABUZE5XRmGkIGOES209eT8tmiLNyyedsogzALdxF477CZu-wV1nl2hjjFRVPuW1SNFyP66fC1MqxvDFs7_r0SViYTdEvoXGxxFj_gSO8xFYVoKxkpm0w8EFAkkyKfVvg_RWTGkMPflOCCIJvINWc0_RWWZxDiWdc_GshkLoJcTctJe1asmeECM8NsWJdO7cm9_V-s54hv_yf9kCNp9ir5hNr4L2scuSHBNFKoSQqCj0IfDok2Z3C_8gIdfN8pEK85CTx44vt77C5R38b1880sIlfUljb5QOmAgmKiS6XPAKuJwv3PaNe4Yr3gKOeeqqo3ML5w4er8SKO87Is4ixTAjA19hv3bE3Cafoym4zn_w7Dgdl2lIOzettjtLbTCF8E9isHXi_ZgNwqaduYFJh-1qDtR1vehCvKZ3ueJAn0
