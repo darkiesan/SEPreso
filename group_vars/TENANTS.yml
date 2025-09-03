@@ -19,6 +19,11 @@ tenants:
         tags:
         - fabricwide
 
+      - id: 5
+        name: TEST_VLAN5
+        tags:
+        - fabricwide
+
     vrfs:
 
       - name: "FW_TEST1"
