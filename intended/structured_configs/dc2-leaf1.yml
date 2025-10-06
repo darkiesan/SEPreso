@@ -326,6 +326,14 @@ router_bgp:
       - 65000:10003
     redistribute_routes:
     - learned
+  - id: 5
+    tenant: FWTEST
+    rd: 10.2.0.3:10005
+    route_targets:
+      both:
+      - 65000:10005
+    redistribute_routes:
+    - learned
   address_family_evpn:
     peer_groups:
     - name: EVPN-OVERLAY-PEERS
@@ -441,6 +449,9 @@ vlans:
 - id: 3
   name: TEST_VLAN3
   tenant: FWTEST
+- id: 5
+  name: TEST_VLAN5
+  tenant: FWTEST
 vrfs:
 - name: default
   ip_routing: true
@@ -463,6 +474,8 @@ vxlan_interface:
         vni: 10002
       - id: 3
         vni: 10003
+      - id: 5
+        vni: 10005
       vrfs:
       - name: FW_TEST1
         vni: 1

@@ -274,6 +274,7 @@ vlan internal order ascending range 3700 3900
 | ------- | ---- | ------------ |
 | 2 | TEST_VLAN2 | - |
 | 3 | TEST_VLAN3 | - |
+| 5 | TEST_VLAN5 | - |
 | 10 | TEST_VLAN10 | - |
 | 100 | TEST_VLAN100 | - |
 | 3000 | MLAG_L3_VRF_FW_TEST1 | MLAG |
@@ -289,6 +290,9 @@ vlan 2
 !
 vlan 3
    name TEST_VLAN3
+!
+vlan 5
+   name TEST_VLAN5
 !
 vlan 10
    name TEST_VLAN10
@@ -557,6 +561,7 @@ interface Vlan4094
 | ---- | --- | ---------- | --------------- |
 | 2 | 10002 | - | - |
 | 3 | 10003 | - | - |
+| 5 | 10005 | - | - |
 | 10 | 10010 | - | - |
 | 100 | 10100 | - | - |
 
@@ -577,6 +582,7 @@ interface Vxlan1
    vxlan udp-port 4789
    vxlan vlan 2 vni 10002
    vxlan vlan 3 vni 10003
+   vxlan vlan 5 vni 10005
    vxlan vlan 10 vni 10010
    vxlan vlan 100 vni 10100
    vxlan vrf FW_TEST1 vni 1
@@ -707,6 +713,7 @@ ASN Notation: asplain
 | ---- | ------------------- | ----------------- | ------------------- | ------------------- | ------------ |
 | 2 | 10.2.0.5:10002 | 65000:10002 | - | - | learned |
 | 3 | 10.2.0.5:10003 | 65000:10003 | - | - | learned |
+| 5 | 10.2.0.5:10005 | 65000:10005 | - | - | learned |
 | 10 | 10.2.0.5:10010 | 65000:10010 | - | - | learned |
 | 100 | 10.2.0.5:10100 | 65000:10100 | - | - | learned |
 
@@ -772,6 +779,11 @@ router bgp 65202
    vlan 3
       rd 10.2.0.5:10003
       route-target both 65000:10003
+      redistribute learned
+   !
+   vlan 5
+      rd 10.2.0.5:10005
+      route-target both 65000:10005
       redistribute learned
    !
    vlan 10
