@@ -295,7 +295,6 @@ router_bgp:
       connected:
         enabled: true
         route_map: RM-CONN-2-BGP-VRFS
-serial_number: SN-dc1-leaf4
 service_routing_protocols_model: multi-agent
 spanning_tree:
   mode: mstp

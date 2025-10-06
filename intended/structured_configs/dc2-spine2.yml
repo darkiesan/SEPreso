@@ -120,7 +120,6 @@ router_bgp:
     peer_groups:
     - name: IPv4-UNDERLAY-PEERS
       activate: true
-serial_number: SN-dc2-spine2
 service_routing_protocols_model: multi-agent
 spanning_tree:
   mode: none

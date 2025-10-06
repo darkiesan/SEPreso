@@ -17,18 +17,18 @@
 
 | POD | Type | Node | Management IP | Platform | Provisioned in CloudVision | Serial Number |
 | --- | ---- | ---- | ------------- | -------- | -------------------------- | ------------- |
-| DC1 | l3leaf | dc1-leaf1 | 192.168.0.13/24 | - | Provisioned | SN-dc1-leaf1 |
-| DC1 | l3leaf | dc1-leaf2 | 192.168.0.14/24 | - | Provisioned | SN-dc1-leaf2 |
-| DC1 | l3leaf | dc1-leaf3 | 192.168.0.15/24 | - | Provisioned | SN-dc1-leaf3 |
-| DC1 | l3leaf | dc1-leaf4 | 192.168.0.16/24 | - | Provisioned | SN-dc1-leaf4 |
-| DC1 | spine | dc1-spine1 | 192.168.0.11/24 | - | Provisioned | SN-dc1-spine1 |
-| DC1 | spine | dc1-spine2 | 192.168.0.12/24 | - | Provisioned | SN-dc1-spine2 |
-| DC2 | l3leaf | dc2-leaf1 | 192.168.0.23/24 | - | Provisioned | SN-dc2-leaf1 |
-| DC2 | l3leaf | dc2-leaf2 | 192.168.0.24/24 | - | Provisioned | SN-dc2-leaf2 |
-| DC2 | l3leaf | dc2-leaf3 | 192.168.0.25/24 | - | Provisioned | SN-dc2-leaf3 |
-| DC2 | l3leaf | dc2-leaf4 | 192.168.0.26/24 | - | Provisioned | SN-dc2-leaf4 |
-| DC2 | spine | dc2-spine1 | 192.168.0.21/24 | - | Provisioned | SN-dc2-spine1 |
-| DC2 | spine | dc2-spine2 | 192.168.0.22/24 | - | Provisioned | SN-dc2-spine2 |
+| DC1 | l3leaf | dc1-leaf1 | 192.168.0.13/24 | - | Provisioned | - |
+| DC1 | l3leaf | dc1-leaf2 | 192.168.0.14/24 | - | Provisioned | - |
+| DC1 | l3leaf | dc1-leaf3 | 192.168.0.15/24 | - | Provisioned | - |
+| DC1 | l3leaf | dc1-leaf4 | 192.168.0.16/24 | - | Provisioned | - |
+| DC1 | spine | dc1-spine1 | 192.168.0.11/24 | - | Provisioned | - |
+| DC1 | spine | dc1-spine2 | 192.168.0.12/24 | - | Provisioned | - |
+| DC2 | l3leaf | dc2-leaf1 | 192.168.0.23/24 | - | Provisioned | - |
+| DC2 | l3leaf | dc2-leaf2 | 192.168.0.24/24 | - | Provisioned | - |
+| DC2 | l3leaf | dc2-leaf3 | 192.168.0.25/24 | - | Provisioned | - |
+| DC2 | l3leaf | dc2-leaf4 | 192.168.0.26/24 | - | Provisioned | - |
+| DC2 | spine | dc2-spine1 | 192.168.0.21/24 | - | Provisioned | - |
+| DC2 | spine | dc2-spine2 | 192.168.0.22/24 | - | Provisioned | - |
 
 > Provision status is based on Ansible inventory declaration and do not represent real status from CloudVision.
 
