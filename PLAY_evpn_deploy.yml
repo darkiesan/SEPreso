@@ -21,21 +21,33 @@
       import_role:
         name: arista.avd.eos_cli_config_gen
 
-- name: Configuration deployment with CVP
-  hosts: cv_server
+# - name: Configuration deployment with CVP legacy
+#   hosts: cv_server
+#   connection: local
+#   gather_facts: false
+#   tasks:
+#     - name: run CVP provisioning
+#       import_role:
+#         name: arista.avd.eos_config_deploy_cvp
+#       vars:
+#         container_root: 'FABRIC'
+#         configlets_prefix: 'AVD'
+#         # execute_tasks: true
+#         # device_filter: ''
+#         # search_key: hostname
+#         state: present
+#         cv_collection: v3
+#         device_search_key: hostname
+#         # device_search_key: serialNumber
+
+- name: Configuration deployment Studios
+  hosts: FABRIC # <-- Targeted devices
   connection: local
   gather_facts: false
   tasks:
-    - name: run CVP provisioning
-      import_role:
-        name: arista.avd.eos_config_deploy_cvp
-      vars:
-        container_root: 'FABRIC'
-        configlets_prefix: 'AVD'
-        # execute_tasks: true
-        # device_filter: ''
-        # search_key: hostname
-        state: present
-        cv_collection: v3
-        device_search_key: hostname
-        # device_search_key: serialNumber
+    - name: Deploy configurations and tags to CloudVision
+      ansible.builtin.import_role:
+        name: arista.avd.cv_deploy
+      # vars:
+      #   cv_server: www.arista.io
+      #   cv_token: <insert service_account token here - use Ansible Vault>
