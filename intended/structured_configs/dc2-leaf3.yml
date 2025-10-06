@@ -67,7 +67,6 @@ ip_igmp_snooping:
       version: 3
 ip_routing: true
 ip_virtual_router_mac_address: 00:11:22:33:44:55
-is_deployed: true
 local_users:
 - name: cvpadmin
   privilege: 15
@@ -101,6 +100,7 @@ management_interfaces:
   ip_address: 192.168.0.25/24
   type: oob
 metadata:
+  is_deployed: true
   dc_name: DC2
   fabric_name: FABRIC
 mlag_configuration:
@@ -295,6 +295,7 @@ router_bgp:
       connected:
         enabled: true
         route_map: RM-CONN-2-BGP-VRFS
+serial_number: SN-dc2-leaf3
 service_routing_protocols_model: multi-agent
 spanning_tree:
   mode: mstp
@@ -402,4 +403,3 @@ vxlan_interface:
       vrfs:
       - name: FW_TEST1
         vni: 1
-serial_number: SN-dc2-leaf3
